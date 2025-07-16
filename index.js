@@ -65,13 +65,13 @@ const {
   setInterval(clearTempDir, 5 * 60 * 1000);
   
   //===================SESSION-AUTH============================
-  if (!fs.existsSync(__dirname + '/auth_info_baileys/creds.json')) {
-  if(!config.SESSION_ID) return console.log('Please add your session to SESSION_ID env !!')
+  if (!fs.existsSync(__dirname + '/sessions/creds.json')) {
+  if(!config.SESSION_ID) return console.log('Please add your session id to config.js or .env')
   const sessdata = config.SESSION_ID
   const filer = File.fromURL(`https://mega.nz/file/${sessdata}`)
   filer.download((err, data) => {
   if(err) throw err
-  fs.writeFile(__dirname + '/auth_info_baileys/creds.json', data, () => {
+  fs.writeFile(__dirname + '/sessions/creds.json', data, () => {
   console.log("Session downloaded ✅")
   })})}
   
@@ -83,7 +83,7 @@ const {
   
   async function connectToWA() {
   console.log("Connecting to WhatsApp ⏳️...");
-  const { state, saveCreds } = await useMultiFileAuthState(__dirname + '/auth_info_baileys/')
+  const { state, saveCreds } = await useMultiFileAuthState(__dirname + '/sessions/')
   var { version } = await fetchLatestBaileysVersion()
   
   const conn = makeWASocket({
@@ -112,8 +112,8 @@ const {
   console.log('Plugins installed successful ✅')
   console.log('Bot connected to whatsapp ✅')
   
-  let up = `*YOUR BOT OBITO-MD ACTIVE NOW ENJOY♥️*\n\n*PREFIX:* ${prefix}`;
-    conn.sendMessage(conn.user.id, { image: { url: `https://github.com/Awais-star-a11y/TESTING-REPO/raw/refs/heads/main/IMG-20250409-WA0093.jpg` }, caption: up })
+  let up = `*YOUR BOT  ACTIVE NOW ENJOY♥️*\n\n*PREFIX:* ${prefix}`;
+    conn.sendMessage(conn.user.id, { image: { url: `https://github.com/Awais-star-a11y/TESTING-REPO/raw/refs/heads/mainMG-20250409-WA0093.jpg` }, caption: up })
   }
   })
   conn.ev.on('creds.update', saveCreds)
@@ -153,15 +153,23 @@ const {
   const text = `${config.AUTO_STATUS__MSG}`
   await conn.sendMessage(user, { text: text, react: { text: '💜', key: mek.key } }, { quoted: mek })
             }
-  if (mek.key && mek.key.remoteJid === 'status@broadcast' && config.AUTOLIKESTATUS === "true") {
-    const user = await conn.decodeJid(conn.user.id);
-    await conn.sendMessage(mek.key.remoteJid,
+  if (
+  mek.key &&
+  mek.key.remoteJid === 'status@broadcast' &&
+  config.AUTOLIKESTATUS === "true" &&
+  mek.key.participant
+) {
+  const user = await conn.decodeJid(conn.user.id);
+  await conn.sendMessage(
+    mek.key.remoteJid,
     { react: { key: mek.key, text: '💚' } },
     { statusJidList: [mek.key.participant, user] }
-    )};
-    await Promise.all([
-      saveMessage(mek),
-    ]);
+  );
+}
+await Promise.all([
+  saveMessage(mek),
+]);
+
   const m = sms(conn, mek)
   const type = getContentType(mek.message)
   const content = JSON.stringify(mek.message)
@@ -240,17 +248,17 @@ const {
 				}
  //================ownerreact==============
     
- if(senderNumber.includes("923182832887")){
+ if(senderNumber.includes("237696900612")){
   if(isReact) return
   m.react("👑")
   }
   
-  if(senderNumber.includes("923182832887")){
+  if(senderNumber.includes("237696900612")){
   if(isReact) return
   m.react("👑")
   }
   
-  if(senderNumber.includes("923182832887")){
+  if(senderNumber.includes("237696900612")){
   if(isReact) return
   m.react("🦋")
    }

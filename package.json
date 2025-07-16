@@ -4,7 +4,7 @@
   "description": "A WHATSAPP BOT CREATED BY AWAISXD",
   "main": "index.js",
   "scripts": {
-    "start": "pm2 start index.js --deep-monitoring --attach --name OBITO-MD",
+    "start": "node index",
     "stop": "pm2 stop OBITO-MD",
     "restart": "pm2 restart AWAIS-MD"
   },
