@@ -1,0 +1,10 @@
+{
+  "settings": {
+    "120363419822802027@g.us": {
+      "enabled": true,
+      "mode": "warn",
+      "warnLimit": 3
+    }
+  },
+  "warnings": {}
+}

@@ -3,64 +3,70 @@ const fetch = require('node-fetch');
 
 cmd({
     pattern: "apk",
-    alias: ["app"],
+    alias: ["app", "apkdl"],
     react: "📲",
-    desc: "📥 𝗗𝗼𝘄𝗻𝗹𝗼𝗮𝗱 𝗔𝗣𝗞",
-    category: "📁 𝗗𝗼𝘄𝗻𝗹𝗼𝗮𝗱",
+    desc: "📥 Download APK by name",
+    category: "📁 Download",
     filename: __filename
-},
-async (conn, mek, m, { from, quoted, q, reply, sender }) => {
+}, async (conn, mek, m, { from, quoted, q, reply, sender }) => {
     try {
-        if (!q) return reply("❌ *𝙋𝙡𝙚𝙖𝙨𝙚 𝙥𝙧𝙤𝙫𝙞𝙙𝙚 𝙩𝙝𝙚 𝙖𝙥𝙥 𝙣𝙖𝙢𝙚!* ❌");
+        if (!q) return reply("❌ *Please enter the app name to search and download.*");
 
-        const res = await fetch(`https://apis.davidcyriltech.my.id/download/apk?text=${encodeURIComponent(q)}`);
-        const data = await res.json();
-        
-        if (!data.success) return reply("❌ *𝙁𝙖𝙞𝙡𝙚𝙙 𝙩𝙤 𝙛𝙚𝙩𝙘𝙝 𝘼𝙋𝙆.* ❌");
+        const api = `https://api.giftedtech.web.id/api/download/apkdl?apikey=gifted&appName=${encodeURIComponent(q)}`;
+        const res = await fetch(api);
+        const json = await res.json();
+
+        if (!json.success || !json.result?.download_url) return reply("🚫 *App not found or failed to fetch APK.*");
+
+        const { appname, appicon, developer, mimetype, download_url } = json.result;
 
         const newsletterContext = {
             mentionedJid: [sender],
-            forwardingScore: 1000,
+            forwardingScore: 999,
             isForwarded: true,
             forwardedNewsletterMessageInfo: {
-                newsletterJid: '120363292876277898@newsletter',
-                newsletterName: "𝐇𝐀𝐍𝐒 𝐁𝐘𝐓𝐄 2",
-                serverMessageId: 143,
+                newsletterJid: "120363292876277898@newsletter",
+                newsletterName: "𝐇𝐀𝐍𝐒 𝐁𝐘𝐓𝐄 𝟐",
+                serverMessageId: 200,
             },
         };
 
-        let desc = `
-╔══✦❘༻ *HANS BYTE* ༺❘✦══╗
-┃ 📂 *𝘼𝙥𝙥 𝙉𝙖𝙢𝙚:*   ${data.apk_name} 
-╰─━──━──━──━─━───━─╯
-┃ 📥 *𝘿𝙤𝙬𝙣𝙡𝙤𝙖𝙙 𝙨𝙩𝙖𝙧𝙩𝙚𝙙...*
-╰──━─════════════⊷❍
-🔰 *HANS BYTE V2 👑*`;
+        const caption = `
+╭━[ *HANS BYTE* ]━━╮
+┃ 🔹 *App Name:* ${appname}
+┃ 🔸 *Developer:* ${developer}
+┃ 🧊 *Status:* Uploading APK...
+╰━━━━━━━━━━━━━━━━━━╯
 
+🚀 *Powered by HANS BYTE V2*
+`.trim();
+
+        // Send preview with icon
         await conn.sendMessage(
             from, 
-            { 
-                image: { url: data.thumbnail }, 
-                caption: desc,
+            {
+                image: { url: appicon },
+                caption,
                 contextInfo: newsletterContext
-            }, 
+            },
             { quoted: mek }
         );
-        
+
+        // Send the actual APK
         await conn.sendMessage(
-            from, 
-            { 
-                document: { url: data.download_link }, 
-                mimetype: "application/vnd.android.package-archive", 
-                fileName: `『 ${data.apk_name} 』.apk`, 
-                caption: "✅ *𝗔𝗣𝗞 𝗨𝗽𝗹𝗼𝗮𝗱𝗲𝗱 𝗦𝘂𝗰𝗰𝗲𝘀𝘀𝗳𝘂𝗹𝗹𝘆!* ✅\n🔰 *HANS BYTE V2 👑*",
+            from,
+            {
+                document: { url: download_url },
+                mimetype: mimetype,
+                fileName: `${appname}.apk`,
+                caption: "✅ *APK successfully sent!*\n🔧 *Use at your own risk.*",
                 contextInfo: newsletterContext
-            }, 
+            },
             { quoted: mek }
         );
-        
-    } catch (e) {
-        console.error(e);
-        reply("❌ *𝘼𝙣 𝙚𝙧𝙧𝙤𝙧 𝙤𝙘𝙘𝙪𝙧𝙧𝙚𝙙 𝙬𝙝𝙞𝙡𝙚 𝙛𝙚𝙩𝙘𝙝𝙞𝙣𝙜 𝙩𝙝𝙚 𝘼𝙋𝙆.* ❌");
+
+    } catch (err) {
+        console.error(err);
+        reply("⚠️ *An error occurred while processing your request.*\nPlease try again later.");
     }
 });

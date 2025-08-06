@@ -1,354 +1,52 @@
 [
   {
-    "id": "FizzxyTheGreat-129AE4180734",
-    "jid": "237696900612@s.whatsapp.net",
+    "id": "A242760DA30FA11D1CBB915D23297D22",
+    "jid": "120363403314586231@newsletter",
     "message": {
       "key": {
-        "remoteJid": "237696900612@s.whatsapp.net",
+        "remoteJid": "120363403314586231@newsletter",
         "fromMe": true,
-        "id": "FizzxyTheGreat-129AE4180734"
+        "id": "A242760DA30FA11D1CBB915D23297D22"
       },
       "message": {
         "reactionMessage": {
           "key": {
-            "remoteJid": "237696900612@s.whatsapp.net",
-            "fromMe": true,
-            "id": "38D5C536C9AF519ADDD74F64615ED913"
+            "remoteJid": "120363403314586231@newsletter",
+            "fromMe": false,
+            "id": "59963F6EDB8F6F25DBA72225546EBD17"
           },
-          "text": "⏳",
-          "senderTimestampMs": "1752628313575"
+          "text": "🏂",
+          "senderTimestampMs": "1754513180822"
         }
       },
-      "messageTimestamp": "1752628313",
+      "messageTimestamp": "1754513180",
       "status": "PENDING"
     },
-    "timestamp": 1752628313000
+    "timestamp": 1754513180000
   },
   {
-    "id": "FizzxyTheGreat-520E92F6DC50",
-    "jid": "237696900612@s.whatsapp.net",
+    "id": "AAA633A9E345DC3097500DA77FE89AD4",
+    "jid": "120363419101584613@newsletter",
     "message": {
       "key": {
-        "remoteJid": "237696900612@s.whatsapp.net",
+        "remoteJid": "120363419101584613@newsletter",
         "fromMe": true,
-        "id": "FizzxyTheGreat-520E92F6DC50"
-      },
-      "message": {
-        "extendedTextMessage": {
-          "text": "╭━━━〔 *Ephoto360 MODELS* 〕━━━⊷\n┃▸ 1. Logo Maker\n┃▸ 2. Advanced Glow\n┃▸ 3. Write Text\n┃▸ 4. Glitch Text\n┃▸ 5. Pixel Glitch\n┃▸ 6. Neon Glitch\n┃▸ 7. Flag Text\n┃▸ 8. 3D Flag Text\n┃▸ 9. Deleting Text\n┃▸ 10. Sand Summer\n┃▸ 11. Making Neon\n┃▸ 12. Royal Text\n╰━━━⪼\n\n📌 Reply with the number to select an effect.",
-          "contextInfo": {
-            "stanzaId": "38D5C536C9AF519ADDD74F64615ED913",
-            "participant": "237696900612@s.whatsapp.net",
-            "quotedMessage": {
-              "extendedTextMessage": {
-                "text": "/ephoto hello",
-                "previewType": "NONE",
-                "inviteLinkGroupTypeV2": "DEFAULT"
-              }
-            },
-            "mentionedJid": [
-              "237696900612@s.whatsapp.net"
-            ],
-            "forwardingScore": 1000,
-            "isForwarded": true,
-            "forwardedNewsletterMessageInfo": {
-              "newsletterJid": "120363292876277898@newsletter",
-              "serverMessageId": 143,
-              "newsletterName": "𝓐𝓽𝓾 𝓧𝓲𝓮 𝓏𝓲"
-            }
-          }
-        }
-      },
-      "messageTimestamp": "1752628313",
-      "status": "PENDING"
-    },
-    "timestamp": 1752628313000
-  },
-  {
-    "id": "FizzxyTheGreat-A570CCC5CB1E",
-    "jid": "237696900612@s.whatsapp.net",
-    "message": {
-      "key": {
-        "remoteJid": "237696900612@s.whatsapp.net",
-        "fromMe": true,
-        "id": "FizzxyTheGreat-A570CCC5CB1E"
-      },
-      "message": {
-        "extendedTextMessage": {
-          "text": "❌ An error occurred. Please try again.",
-          "contextInfo": {
-            "stanzaId": "38D5C536C9AF519ADDD74F64615ED913",
-            "participant": "237696900612@s.whatsapp.net",
-            "quotedMessage": {
-              "extendedTextMessage": {
-                "text": "/ephoto hello",
-                "previewType": "NONE",
-                "inviteLinkGroupTypeV2": "DEFAULT"
-              }
-            },
-            "mentionedJid": [
-              "237696900612@s.whatsapp.net"
-            ],
-            "forwardingScore": 1000,
-            "isForwarded": true,
-            "forwardedNewsletterMessageInfo": {
-              "newsletterJid": "120363292876277898@newsletter",
-              "serverMessageId": 143,
-              "newsletterName": "𝓐𝓽𝓾 𝓧𝓲𝓮 𝓏𝓲"
-            }
-          }
-        }
-      },
-      "messageTimestamp": "1752628313",
-      "status": "PENDING"
-    },
-    "timestamp": 1752628313000
-  },
-  {
-    "id": "0EDAD6B66AB43BDF7A194714EBE55DA7",
-    "jid": "237696900612@s.whatsapp.net",
-    "message": {
-      "key": {
-        "remoteJid": "237696900612@s.whatsapp.net",
-        "fromMe": true,
-        "id": "0EDAD6B66AB43BDF7A194714EBE55DA7"
-      },
-      "messageTimestamp": 1752628321,
-      "pushName": "Hans Tech",
-      "broadcast": false,
-      "status": 2,
-      "message": {
-        "extendedTextMessage": {
-          "text": "1",
-          "previewType": "NONE",
-          "contextInfo": {
-            "stanzaId": "FizzxyTheGreat-520E92F6DC50",
-            "participant": "237696900612@s.whatsapp.net",
-            "quotedMessage": {
-              "extendedTextMessage": {
-                "text": "╭━━━〔 *Ephoto360 MODELS* 〕━━━⊷\n┃▸ 1. Logo Maker\n┃▸ 2. Advanced Glow\n┃▸ 3. Write Text\n┃▸ 4. Glitch Text\n┃▸ 5. Pixel Glitch\n┃▸ 6. Neon Glitch\n┃▸ 7. Flag Text\n┃▸ 8. 3D Flag Text\n┃▸ 9. Deleting Text\n┃▸ 10. Sand Summer\n┃▸ 11. Making Neon\n┃▸ 12. Royal Text\n╰━━━⪼\n\n📌 Reply with the number to select an effect.",
-                "previewType": "NONE",
-                "contextInfo": {
-                  "mentionedJid": [
-                    "237696900612@s.whatsapp.net"
-                  ],
-                  "forwardingScore": 1000,
-                  "isForwarded": true
-                },
-                "inviteLinkGroupTypeV2": "DEFAULT"
-              }
-            },
-            "entryPointConversionSource": "non_contact",
-            "entryPointConversionApp": "whatsapp",
-            "entryPointConversionDelaySeconds": 86814
-          },
-          "inviteLinkGroupTypeV2": "DEFAULT"
-        }
-      }
-    },
-    "timestamp": 1752628321000
-  },
-  {
-    "id": "96972E1A39BD6F889B19A724F5F9107E",
-    "jid": "120363419239237678@newsletter",
-    "message": {
-      "key": {
-        "remoteJid": "120363419239237678@newsletter",
-        "fromMe": false,
-        "id": "96972E1A39BD6F889B19A724F5F9107E"
-      },
-      "messageTimestamp": 1752628334,
-      "broadcast": false,
-      "newsletterServerId": 3334,
-      "message": {
-        "conversation": "We win guys"
-      }
-    },
-    "timestamp": 1752628334000
-  },
-  {
-    "id": "FizzxyTheGreat-01D0AA4C70D5",
-    "jid": "237696900612:98@s.whatsapp.net",
-    "message": {
-      "key": {
-        "remoteJid": "237696900612:98@s.whatsapp.net",
-        "fromMe": true,
-        "id": "FizzxyTheGreat-01D0AA4C70D5"
-      },
-      "message": {
-        "imageMessage": {
-          "url": "https://mmg.whatsapp.net/o1/v/t24/f2/m235/AQMDZoiWvdJkDgfUePG5GUpvtJwN-E57-tnjtDhBqQwT1ggCTU39kJ4xby_71Fs_jDEq6gdMZgZnS-kA_a-LuPJOE5Rn9QFZkhEFeVdLzw?ccb=9-4&oh=01_Q5Aa2AGrAYkvbNxvdvtqjl13Qw8d59x1jtTfws4Dml0l3Eb24A&oe=689E6D26&_nc_sid=e6ed6c&mms3=true",
-          "mimetype": "image/jpeg",
-          "caption": "*YOUR BOT OBITO-MD ACTIVE NOW ENJOY♥️*\n\n*PREFIX:* /",
-          "fileSha256": "YI+Hh/10shO9eyNm9WW+xQY2B1Vpk/+hLzdGlsRrpcc=",
-          "fileLength": "89085",
-          "height": 1000,
-          "width": 1000,
-          "mediaKey": "0nxsE8PHE2YnbSsrMR0z3glnAAt8vAk88fA2FDNABkA=",
-          "fileEncSha256": "fgJmGXS4ezw4v8SWh62Gh3WMQHD2FHXqyxci2jeimBQ=",
-          "directPath": "/o1/v/t24/f2/m235/AQMDZoiWvdJkDgfUePG5GUpvtJwN-E57-tnjtDhBqQwT1ggCTU39kJ4xby_71Fs_jDEq6gdMZgZnS-kA_a-LuPJOE5Rn9QFZkhEFeVdLzw?ccb=9-4&oh=01_Q5Aa2AGrAYkvbNxvdvtqjl13Qw8d59x1jtTfws4Dml0l3Eb24A&oe=689E6D26&_nc_sid=e6ed6c",
-          "mediaKeyTimestamp": "1752628350",
-          "jpegThumbnail": "/9j/2wBDABALDA4MChAODQ4SERATGCgaGBYWGDEjJR0oOjM9PDkzODdASFxOQERXRTc4UG1RV19iZ2hnPk1xeXBkeFxlZ2P/2wBDARESEhgVGC8aGi9jQjhCY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2P/wAARCAAgACADASIAAhEBAxEB/8QAGgAAAgIDAAAAAAAAAAAAAAAAAgQAAwEFBv/EACEQAAEEAgICAwAAAAAAAAAAAAEAAgMREjEEIUGBMlFx/8QAFwEAAwEAAAAAAAAAAAAAAAAAAAECA//EABsRAQEAAQUAAAAAAAAAAAAAAAABEQISITFR/9oADAMBAAIRAxEAPwDgqVrYXuAPQB1Z2px2h07Q4WNkfaeHHdcM0wcyOXsPaMvVX0pbSdEDE4AmrrdeEBFrYu48mUk3GDnRxC3PcMfVX2kpW4yOFUNgIOychY4scHBXNkOsutaSwKlowmavDJldfyGP4qnOLjZQZX5WMkYPc//Z"
-        }
-      },
-      "messageTimestamp": "1752628350",
-      "status": "PENDING"
-    },
-    "timestamp": 1752628350000
-  },
-  {
-    "id": "423A585DC4A4FF2E3E95B8BA92BF5AB9",
-    "jid": "237696900612@s.whatsapp.net",
-    "message": {
-      "key": {
-        "remoteJid": "237696900612@s.whatsapp.net",
-        "fromMe": true,
-        "id": "423A585DC4A4FF2E3E95B8BA92BF5AB9"
-      },
-      "messageTimestamp": 1752628356,
-      "pushName": "Hans Tech",
-      "broadcast": false,
-      "status": 2,
-      "message": {
-        "extendedTextMessage": {
-          "text": "/ephoto hi",
-          "previewType": "NONE",
-          "contextInfo": {
-            "entryPointConversionSource": "non_contact",
-            "entryPointConversionApp": "whatsapp",
-            "entryPointConversionDelaySeconds": 86849
-          },
-          "inviteLinkGroupTypeV2": "DEFAULT"
-        }
-      }
-    },
-    "timestamp": 1752628356000
-  },
-  {
-    "id": "FizzxyTheGreat-32B4294B0DCE",
-    "jid": "237696900612@s.whatsapp.net",
-    "message": {
-      "key": {
-        "remoteJid": "237696900612@s.whatsapp.net",
-        "fromMe": true,
-        "id": "FizzxyTheGreat-32B4294B0DCE"
+        "id": "AAA633A9E345DC3097500DA77FE89AD4"
       },
       "message": {
         "reactionMessage": {
           "key": {
-            "remoteJid": "237696900612@s.whatsapp.net",
+            "remoteJid": "120363419101584613@newsletter",
             "fromMe": true,
-            "id": "423A585DC4A4FF2E3E95B8BA92BF5AB9"
+            "id": "C997BC00A05EBE0918C48A722D13768D"
           },
-          "text": "⏳",
-          "senderTimestampMs": "1752628356217"
+          "text": "🦋",
+          "senderTimestampMs": "1754513180825"
         }
       },
-      "messageTimestamp": "1752628356",
+      "messageTimestamp": "1754513180",
       "status": "PENDING"
     },
-    "timestamp": 1752628356000
-  },
-  {
-    "id": "FizzxyTheGreat-649D048F6DA8",
-    "jid": "237696900612@s.whatsapp.net",
-    "message": {
-      "key": {
-        "remoteJid": "237696900612@s.whatsapp.net",
-        "fromMe": true,
-        "id": "FizzxyTheGreat-649D048F6DA8"
-      },
-      "message": {
-        "extendedTextMessage": {
-          "text": "╭━━━〔 *Ephoto360 MODELS* 〕━━━⊷\n┃▸ 1. Logo Maker\n┃▸ 2. Advanced Glow\n┃▸ 3. Write Text\n┃▸ 4. Glitch Text\n┃▸ 5. Pixel Glitch\n┃▸ 6. Neon Glitch\n┃▸ 7. Flag Text\n┃▸ 8. 3D Flag Text\n┃▸ 9. Deleting Text\n┃▸ 10. Sand Summer\n┃▸ 11. Making Neon\n┃▸ 12. Royal Text\n╰━━━⪼\n\n📌 Reply with the number to select an effect.",
-          "contextInfo": {
-            "stanzaId": "423A585DC4A4FF2E3E95B8BA92BF5AB9",
-            "participant": "237696900612@s.whatsapp.net",
-            "quotedMessage": {
-              "extendedTextMessage": {
-                "text": "/ephoto hi",
-                "previewType": "NONE",
-                "inviteLinkGroupTypeV2": "DEFAULT"
-              }
-            },
-            "mentionedJid": [
-              "237696900612@s.whatsapp.net"
-            ],
-            "forwardingScore": 1000,
-            "isForwarded": true,
-            "forwardedNewsletterMessageInfo": {
-              "newsletterJid": "120363292876277898@newsletter",
-              "serverMessageId": 143,
-              "newsletterName": "𝐇𝐀𝐍𝐒 𝐁𝐘𝐓𝐄 𝐌𝐃"
-            }
-          }
-        }
-      },
-      "messageTimestamp": "1752628356",
-      "status": "PENDING"
-    },
-    "timestamp": 1752628356000
-  },
-  {
-    "id": "0E464965B4B4DF8B256431A9EEBDBE11",
-    "jid": "237696900612@s.whatsapp.net",
-    "message": {
-      "key": {
-        "remoteJid": "237696900612@s.whatsapp.net",
-        "fromMe": true,
-        "id": "0E464965B4B4DF8B256431A9EEBDBE11"
-      },
-      "messageTimestamp": 1752628361,
-      "pushName": "Hans Tech",
-      "broadcast": false,
-      "status": 2,
-      "message": {
-        "extendedTextMessage": {
-          "text": "6",
-          "previewType": "NONE",
-          "contextInfo": {
-            "stanzaId": "FizzxyTheGreat-649D048F6DA8",
-            "participant": "237696900612@s.whatsapp.net",
-            "quotedMessage": {
-              "extendedTextMessage": {
-                "text": "╭━━━〔 *Ephoto360 MODELS* 〕━━━⊷\n┃▸ 1. Logo Maker\n┃▸ 2. Advanced Glow\n┃▸ 3. Write Text\n┃▸ 4. Glitch Text\n┃▸ 5. Pixel Glitch\n┃▸ 6. Neon Glitch\n┃▸ 7. Flag Text\n┃▸ 8. 3D Flag Text\n┃▸ 9. Deleting Text\n┃▸ 10. Sand Summer\n┃▸ 11. Making Neon\n┃▸ 12. Royal Text\n╰━━━⪼\n\n📌 Reply with the number to select an effect.",
-                "previewType": "NONE",
-                "contextInfo": {
-                  "mentionedJid": [
-                    "237696900612@s.whatsapp.net"
-                  ],
-                  "forwardingScore": 1000,
-                  "isForwarded": true
-                },
-                "inviteLinkGroupTypeV2": "DEFAULT"
-              }
-            },
-            "entryPointConversionSource": "non_contact",
-            "entryPointConversionApp": "whatsapp",
-            "entryPointConversionDelaySeconds": 86854
-          },
-          "inviteLinkGroupTypeV2": "DEFAULT"
-        }
-      }
-    },
-    "timestamp": 1752628361000
-  },
-  {
-    "id": "56D8652D1B8D0D6052A2834561309A21",
-    "jid": "120363419239237678@newsletter",
-    "message": {
-      "key": {
-        "remoteJid": "120363419239237678@newsletter",
-        "fromMe": false,
-        "id": "56D8652D1B8D0D6052A2834561309A21"
-      },
-      "messageTimestamp": 1752628455,
-      "broadcast": false,
-      "newsletterServerId": 3335,
-      "message": {
-        "conversation": "Dm on +258 82 934 6561 for rewarde"
-      }
-    },
-    "timestamp": 1752628455000
+    "timestamp": 1754513180000
   }
 ]

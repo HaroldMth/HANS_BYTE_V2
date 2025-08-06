@@ -1,87 +1,103 @@
 const { cmd } = require("../command");
+const { getBuffer } = require("../lib/functions");
 const axios = require("axios");
 
 cmd({
     pattern: "fbdl",
-    alias: ["fb", "facebook"],
-    desc: "Download Facebook videos",
-    category: "media",
-    filename: __filename
-},
-async(robin, mek, m, {from, q, sender, reply}) => {
+    alias: ["facebook", "fbdownload"],
+    desc: "Download HD Facebook videos in style 😎",
+    category: "download",
+    react: "🔥",
+    use: ".fbdl <facebook-url>",
+    filename: __filename,
+}, async (conn, mek, m, { args, q, reply, sender }) => {
     try {
-        if (!q) return reply("Please provide a Facebook URL");
-        
-        // Validate Facebook URL
-        const fbRegex = /^(https?:\/\/)?(www\.|m\.)?(facebook\.com|fb\.watch)\/.+/i;
-        if (!fbRegex.test(q)) return reply("❌ Invalid Facebook URL");
+        if (!q) return reply("🤖 *Yo!* Where's the Facebook URL?\n\nExample: .fbdl https://www.facebook.com/...");
 
-        await reply("📥 Processing Facebook video...");
-
-        // Newsletter context info
-        const _0x273817 = {
-            'mentionedJid': [sender],
-            'forwardingScore': 0x3e7,
-            'isForwarded': true,
-            'forwardedNewsletterMessageInfo': {
-                'newsletterJid': '120363292876277898@newsletter',
-                'newsletterName': "𝐇𝐀𝐍𝐒 𝐁𝐘𝐓𝐄 𝐌𝐃",
-                'serverMessageId': 0x8f
-            }
-        };
-
-        const apiUrl = `https://suhas-bro-api.vercel.app/download/fbdown?url=${encodeURIComponent(q)}`;
-        const response = await axios.get(apiUrl);
-
-        if (!response.data.status || !response.data.result) {
-            return reply("❌ Failed to fetch video. Invalid URL or API error.");
+        // Validate URL format
+        if (!q.match(/https?:\/\/(www\.)?facebook\.com\/.+/i)) {
+            return reply("🚫 *Oops!* That doesn't look like a Facebook link!\nSend me a proper Facebook video URL!");
         }
 
-        const { thumb, title, desc, sd, hd } = response.data.result;
-        const videoUrl = hd || sd;
+        reply("⚡ *Processing your request...*\n_Hold tight while I work my magic!_ ✨");
 
-        // Prepare info message
-        const infoMessage = `
-╔══════════════════╗
-📱 𝗙𝗔𝗖𝗘𝗕𝗢𝗢𝗞 𝗩𝗜𝗗𝗘𝗢
-╚══════════════════╝
+        // API endpoint
+        const apiUrl = `https://apis.davidcyriltech.my.id/facebook3?url=${encodeURIComponent(q)}`;
 
-📌 𝗧𝗜𝗧𝗟𝗘: ${title || "No title available"}
-📝 𝗗𝗘𝗦𝗖: ${desc || "No description available"}
+        // Browser-like headers to avoid 500 errors
+        const headers = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36',
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+            'Accept-Language': 'en-US,en;q=0.5',
+            'Connection': 'keep-alive',
+            'Upgrade-Insecure-Requests': '1',
+            'Sec-Fetch-Dest': 'document',
+            'Sec-Fetch-Mode': 'navigate',
+            'Sec-Fetch-Site': 'none',
+            'Sec-Fetch-User': '?1'
+        };
 
-🔗 𝗦𝗢𝗨𝗥𝗖𝗘 𝗨𝗥𝗟: ${q}
+        // Fetch video data with browser headers
+        const response = await axios.get(apiUrl, { headers });
+        const data = response.data;
 
-╔══════════════════╗
-✦  *HANS BYTE V2*  ✦
-╚══════════════════╝
-        `.trim();
+        if (!data.status || !data.results || !data.results.hdLink) {
+            // Detailed error handling
+            if (data.message) {
+                return reply(`😵 *Whoops!* API Error: ${data.message}`);
+            }
+            return reply("😵 *Whoops!* Couldn't fetch that video!\nThe video might be private or unavailable.");
+        }
 
-        // Send thumbnail with info (with newsletter context)
-        await robin.sendMessage(
-            from,
-            {
-                image: { url: thumb },
-                caption: infoMessage,
-                contextInfo: _0x273817
+        const { title, caption, duration, image, hdLink } = data.results;
+
+        // Newsletter context
+        const newsletterContext = {
+            mentionedJid: [sender],
+            forwardingScore: 1000,
+            isForwarded: true,
+            forwardedNewsletterMessageInfo: {
+                newsletterJid: '120363292876277898@newsletter',
+                newsletterName: "𝐇𝐀𝐍𝐒 𝐁𝐘𝐓𝐄 𝟐",
+                serverMessageId: 143,
             },
-            { quoted: mek }
-        );
+        };
 
-        // Send video file (with newsletter context)
-        await robin.sendMessage(
-            from,
-            {
-                video: { url: videoUrl },
-                mimetype: "video/mp4",
-                caption: `📥 ${title || "Facebook Video"}\n\n⚡ Powered by 𝐇𝐀𝐍𝐒 𝐁𝐘𝐓𝗘 𝗠𝗗`,
-                fileName: `facebook_video_${Date.now()}.mp4`,
-                contextInfo: _0x273817
-            },
-            { quoted: mek }
-        );
+        // Send downloading status
+        await conn.sendMessage(mek.chat, {
+            text: `📥 *Downloading HD Video...*\n\n` +
+                  `⌛ *Duration:* ${duration || "Unknown"}\n` +
+                  `🔥 *Powered by HANS BYTE V2*`,
+            contextInfo: newsletterContext
+        }, { quoted: mek });
 
-    } catch (error) {
-        console.error("Facebook DL Error:", error);
-        reply("❌ Error downloading video. Please check the URL and try again.");
+        // Send HD video directly
+        await conn.sendMessage(mek.chat, {
+            video: { url: hdLink },
+            caption: `✅ *Download Complete!*\n\n` +
+                     `🎬 *${title || "Facebook Video"}*\n` +
+                     `📝 ${caption || "No description"}\n\n` +
+                     `⚡ *Enjoy your HD content!*`,
+            contextInfo: newsletterContext
+        }, { quoted: mek });
+
+    } catch (e) {
+        // Enhanced error diagnostics
+        console.error("FB Download Error:", e.response?.status, e.response?.data);
+        
+        let errorMsg = "💥 *Yikes!* Something went wrong!";
+        
+        if (e.response) {
+            if (e.response.status === 500) {
+                errorMsg += "\n\n⚠️ *Server Error:* The API is having issues";
+            } else if (e.response.data?.message) {
+                errorMsg += `\n\n🔧 *API Says:* ${e.response.data.message}`;
+            }
+        } else if (e.message.includes("timeout")) {
+            errorMsg += "\n\n⏱️ *Timeout:* The request took too long";
+        }
+        
+        errorMsg += "\n\nTry again later or use a different link!";
+        reply(errorMsg);
     }
 });

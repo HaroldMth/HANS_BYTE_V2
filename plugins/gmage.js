@@ -1,0 +1,67 @@
+const { cmd } = require("../command");
+const axios = require("axios");
+
+cmd({
+    pattern: "gimage",
+    alias: ["googleimage", "imgsearch", "img"],
+    desc: "🔍 Search Google Images in Hans Byte Style 🖼️",
+    category: "search",
+    react: "📸",
+    use: ".gimage <query>",
+    filename: __filename,
+}, async (conn, mek, m, { q, reply, sender }) => {
+    try {
+        if (!q) {
+            return reply(
+`┌─❖ 📸 *HANS BYTE IMAGE SEARCH* 📸
+│
+├  🔎 Use:  *.gimage <query>*
+│
+└─❖ Example: *.gimage Cute Cat*`
+            );
+        }
+
+        reply("⚡ *Fetching cool images...*\n_Just a sec while Hans Byte works its magic!_ ✨");
+
+        const apiUrl = `https://api.giftedtech.web.id/api/search/googleimage?apikey=gifted&query=${encodeURIComponent(q)}`;
+        const res = await axios.get(apiUrl);
+        const data = res.data;
+
+        if (!data.success || !data.results?.length)
+            return reply("😵 *No images found!* Try a different keyword.");
+
+        // Pick 5 random images from results
+        const shuffled = data.results.sort(() => 0.5 - Math.random());
+        const selected = shuffled.slice(0, 5);
+
+        const newsletterContext = {
+            mentionedJid: [sender],
+            forwardingScore: 1000,
+            isForwarded: true,
+            forwardedNewsletterMessageInfo: {
+                newsletterJid: '120363292876277898@newsletter',
+                newsletterName: "𝐇𝐀𝐍𝐒 𝐁𝐘𝐓𝐄 𝟐",
+                serverMessageId: 200,
+            },
+        };
+
+        // Send results one by one
+        for (let img of selected) {
+            await conn.sendMessage(mek.chat, {
+                image: { url: img },
+                caption: 
+`┌─❖ 🖼️ *IMAGE RESULT* 🖼️
+│
+├  🔎 Query: *${q}*
+├  📥 Source: Google Images
+│
+└─❖ Powered by HANS BYTE ⚡`,
+                contextInfo: newsletterContext
+            }, { quoted: mek });
+        }
+
+    } catch (e) {
+        console.error("Google Image Error:", e.response?.status, e.response?.data || e.message);
+        reply("💥 *Oops!* Something went wrong fetching images.\nTry again later.");
+    }
+});

