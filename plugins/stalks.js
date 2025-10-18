@@ -52,7 +52,7 @@ async (conn, mek, m, { from, quoted, q, reply, sender }) => {
             forwardingScore: 1000,
             isForwarded: true,
             forwardedNewsletterMessageInfo: {
-                newsletterJid: '120363292876277898@newsletter',
+                newsletterJid: '120363422794491778@newsletter',
                 newsletterName: "𝐇𝐀𝐍𝐒 𝐁𝐘𝐓𝐄 𝟐",
                 serverMessageId: 146,
             },
@@ -117,7 +117,7 @@ ${data.description}
             forwardingScore: 1000,
             isForwarded: true,
             forwardedNewsletterMessageInfo: {
-                newsletterJid: '120363292876277898@newsletter',
+                newsletterJid: '120363422794491778@newsletter',
                 newsletterName: "𝐇𝐀𝐍𝐒 𝐁𝐘𝐓𝐄 𝟐",
                 serverMessageId: 147,
             },
@@ -143,87 +143,61 @@ ${data.description}
 });
 
 
+
+
 cmd({
-    pattern: "npms",
-    alias: ["npmstalk", "npmsearch", "npminfo", "npmpkg", "npmpackage"],
+    pattern: "npm",
+    alias: ["npms", "npmsearch"],
     react: "📦",
-    desc: "🔍 Get info about any npm package",
-    category: "🕵️ Stalker",
+    desc: "Search for an NPM package",
+    category: "📁 Tools",
     filename: __filename
-},
-async (conn, mek, m, { from, quoted, q, reply, sender }) => {
+}, async (conn, mek, m, { reply, q }) => {
     try {
-        if (!q) return reply("❌ *Please provide an npm package name!*\nExample: `.npms baileys`");
+        if (!q) return reply("❌ Please provide a package name. Example: npm @whiskeysockets/baileys");
 
-        await conn.sendMessage(from, { react: { text: '⏳', key: mek.key } });
+        const pkg = encodeURIComponent(q);
+        const apiUrl = `https://hanstech-api.zone.id/api/npm-stalker?package=${pkg}&key=hans%7EUfvyXEb`;
 
-        const url = `https://apis.davidcyriltech.my.id/stalk/npm?query=${encodeURIComponent(q)}`;
-        const res = await fetch(url);
+        const res = await fetch(apiUrl, { method: 'GET' });
         const data = await res.json();
-        const newsletterContext = {
-            mentionedJid: [sender],
-            forwardingScore: 1000,
-            isForwarded: true,
-            forwardedNewsletterMessageInfo: {
-                newsletterJid: '120363292876277898@newsletter',
-                newsletterName: "𝐇𝐀𝐍𝐒 𝐁𝐘𝐓𝐄 𝟐",
-                serverMessageId: 147,
-            },
-            externalAdReply: {
-                title: data.title,
-                body: `${data.followers} — WhatsApp Channel`,
-                mediaType: 1,
-                thumbnailUrl: 'https://i.ibb.co/9gCjCwp/OIG4-E-D0-QOU1r4-Ru-CKuf-Nj0o.jpg', // WhatsApp logo or use a better image if available
-                sourceUrl: q
-            }
-        };
-        
-        if (!data?.status) {
-            return reply("❌ *No npm package found with that name!* Please check and try again.");
+
+        if (!data || data.status === 'error' || !data.name) {
+            console.error('NPM stalker error:', data);
+            return reply("❌ Package not found or API error.");
         }
 
-        const latestVersion = data.latestVersion || 'N/A';
-        const lastModified = data.lastModified ? new Date(data.lastModified).toDateString() : 'N/A';
-        const homepage = data.homepage || 'N/A';
-        const repository = data.repository || 'N/A';
-        const description = data.description || 'N/A';
-        const keywords = Array.isArray(data.keywords) && data.keywords.length > 0 ? data.keywords.join(", ") : "N/A";
+        // adapt fields depending on what Hans Tech returns
+        const name = data.name || q;
+        const version = data.version || data['dist-tags']?.latest || "N/A";
+        const description = data.description || "No description";
+        const homepage = data.homepage || (data.repository && (data.repository.url || data.repository)) || "N/A";
+        const repository = (data.repository && (data.repository.url || data.repository)) || "N/A";
+        const license = data.license || "N/A";
+        const author = (data.author && (data.author.name || data.author)) || (data.maintainers ? data.maintainers.map(m=>m.name).join(", ") : "N/A");
+        const created = (data.time && data.time.created) || (data.time && data.time['created']) || "N/A";
+        const modified = (data.time && data.time.modified) || (data.time && data.time['modified']) || "N/A";
+        const npmLink = data.links?.npm || `https://www.npmjs.com/package/${encodeURIComponent(name)}`;
+        const homepageOrRepo = homepage !== "N/A" ? homepage : repository;
 
-        // Prepare download links for last 5 versions if available
-        let versionsInfo = "";
-        if (Array.isArray(data.versions) && data.versions.length > 0) {
-            const lastVersions = data.versions.slice(-5);
-            versionsInfo = lastVersions.map(v => `• ${v.version}: ${v.download}`).join("\n");
-        } else {
-            versionsInfo = "No version info available.";
-        }
+        const msg = `
+╭━[   *NPM PACKAGE INFO*   ]━╮
+┃ 🔹 *Name:* ${name}
+┃ 📝 *Description:* ${description}
+┃ 📦 *Version:* ${version}
+┃ 👤 *Author/Maintainers:* ${author}
+┃ 📅 *Created:* ${created}
+┃ ✏️ *Last Modified:* ${modified}
+┃ 🏷️ *License:* ${license}
+┃ 🌐 *Homepage / Repo:* ${homepageOrRepo}
+┃ 🔗 *NPM:* ${npmLink}
+╰━━━━━━━━━━━━━━━━━━━━╯
+`.trim();
 
-        const npmInfo = `
-*📦 npm Package Info*
-
-*📛 Name:* ${data.name}
-*📝 Description:* ${description}
-*🔑 Keywords:* ${keywords}
-*🆕 Latest Version:* ${latestVersion}
-*📅 Last Modified:* ${lastModified}
-
-*🏠 Homepage:* ${homepage}
-*🔗 Repository:* ${repository}
-
-*📥 Recent Downloads:*
-${versionsInfo}
-
-🔰 *𝐇𝐀𝐍𝐒 𝐁𝐘𝐓𝐄 𝟐*`;
-
-        await conn.sendMessage(
-            from,
-            { text: npmInfo, contextInfo: newsletterContext },
-            { quoted: mek }
-        );
-
-    } catch (e) {
-        console.error("npm Stalk Error:", e);
-        reply("❌ *Error fetching npm package info:* " + e.message);
+        reply(msg);
+    } catch (err) {
+        console.error(err);
+        reply("❌ Error fetching package info.");
     }
 });
 
@@ -270,7 +244,7 @@ async (conn, mek, m, { from, quoted, q, reply, sender }) => {
             forwardingScore: 1000,
             isForwarded: true,
             forwardedNewsletterMessageInfo: {
-                newsletterJid: '120363292876277898@newsletter',
+                newsletterJid: '120363422794491778@newsletter',
                 newsletterName: "𝐇𝐀𝐍𝐒 𝐁𝐘𝐓𝐄 𝟐",
                 serverMessageId: 148,
             },
@@ -328,7 +302,7 @@ cmd({
             forwardingScore: 999,
             isForwarded: true,
             forwardedNewsletterMessageInfo: {
-                newsletterJid: "120363292876277898@newsletter",
+                newsletterJid: "120363422794491778@newsletter",
                 newsletterName: "𝐇𝐀𝐍𝐒 𝐁𝐘𝐓𝐄 𝟐",
                 serverMessageId: 404
             },
@@ -398,7 +372,7 @@ cmd({
             forwardingScore: 999,
             isForwarded: true,
             forwardedNewsletterMessageInfo: {
-                newsletterJid: "120363292876277898@newsletter",
+                newsletterJid: "120363422794491778@newsletter",
                 newsletterName: "𝐇𝐀𝐍𝐒 𝐁𝐘𝐓𝐄 𝟐",
                 serverMessageId: 505
             },

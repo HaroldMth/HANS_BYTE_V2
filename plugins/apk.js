@@ -12,7 +12,7 @@ cmd({
     try {
         if (!q) return reply("❌ *Please enter the app name to search and download.*");
 
-        const api = `https://api.giftedtech.co.ke/api/download/apkdl?apikey=gifted&appName=${encodeURIComponent(q)}`;
+        const api = `https://api.giftedtech.co.ke/api/download/apkdl?apikey=gifted_api_6kuv56877d&appName=${encodeURIComponent(q)}`;
         const res = await fetch(api);
         const json = await res.json();
 
@@ -25,7 +25,7 @@ cmd({
             forwardingScore: 999,
             isForwarded: true,
             forwardedNewsletterMessageInfo: {
-                newsletterJid: "120363292876277898@newsletter",
+                newsletterJid: "120363422794491778@newsletter",
                 newsletterName: "𝐇𝐀𝐍𝐒 𝐁𝐘𝐓𝐄 𝟐",
                 serverMessageId: 200,
             },

@@ -13,7 +13,7 @@ cmd({
         if (!q) return reply("❌ *Please provide a website URL to screenshot.*\n\nExample:\n.ssweb https://hans-web.vercel.app");
 
         // Encode the URL parameter
-        const apiUrl = `https://api.giftedtech.web.id/api/tools/ssweb?apikey=gifted&url=${encodeURIComponent(q)}`;
+        const apiUrl = `https://api.giftedtech.web.id/api/tools/ssweb?apikey=gifted_api_6kuv56877d&url=${encodeURIComponent(q)}`;
         const res = await fetch(apiUrl);
 
         // The API returns an image directly, so we just send it as image message
@@ -27,7 +27,7 @@ cmd({
             forwardingScore: 999,
             isForwarded: true,
             forwardedNewsletterMessageInfo: {
-                newsletterJid: "120363292876277898@newsletter",
+                newsletterJid: "120363422794491778@newsletter",
                 newsletterName: "𝐇𝐀𝐍𝐒 𝐁𝐘𝐓𝐄 𝟐",
                 serverMessageId: 203,
             },

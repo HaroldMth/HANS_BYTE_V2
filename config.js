@@ -6,9 +6,10 @@ function convertToBool(text, fault = 'true') {
 }
 
 module.exports = {
-    SESSION_ID: process.env.SESSION_ID || "t3FXVKRI#rKIkd2vQUbIu-SQEvAIZ0j0lPI2iqdz5t5PZHhczltw",
-    OWNER_NUM: process.env.OWNER_NUM || "237696900612",
-    GEMINI_API_KEY: process.env.GEMINI_API_KEY || 'AIzaSyDrhALyWLk7RN40C1sX5a03XVk8tO48P_8',
+    SESSION_ID: process.env.SESSION_ID || "tmVVEaYB#GPbKL_0EkMxl4vUAeKAa5LT6IL2X5ESQjUkuJymDH6A",
+    OWNER_NUM: process.env.OWNER_NUM || "237696900612", // your number
+    OWNER_NAME: process.env.OWNER_NAME || "HANS TECH",
+    BOT_NAME: process.env.BOT_NAME || "HANS BYTE V2",
     SUDO: process.env.SUDO || "237696900612",
     CUSTOM_REACT: process.env.CUSTOM_REACT || "false",
     PREFIX: process.env.PREFIX || "!",
@@ -31,7 +32,7 @@ module.exports = {
     REACT_EMOJI: process.env.REACT_EMOJI || '👍',
     AUTO_REPLY_TEXT: process.env.AUTO_REPLY_TEXT || 'Hello! I have received your status.',
     ALIVE_IMG: process.env.ALIVE_IMG || "https://i.ibb.co/9gCjCwp/OIG4-E-D0-QOU1r4-Ru-CKuf-Nj0o.jpg",
-    AUTO_REACT: process.env.AUTO_REACT || "true",
+    AUTO_REACT: process.env.AUTO_REACT || "false",
     OWNER_REACT: process.env.OWNER_REACT || "false",
     ANTI_DEL_PATH: process.env.ANTI_DEL_PATH || "log", // change it to 'same' if you want to resend deleted message in same chat
     AUTOLIKESTATUS: process.env.AUTOLIKESTATUS || "true",

@@ -23,7 +23,7 @@ cmd({
 
         reply("⚡ *Fetching cool images...*\n_Just a sec while Hans Byte works its magic!_ ✨");
 
-        const apiUrl = `https://api.giftedtech.co.ke/api/search/googleimage?apikey=gifted&query=${encodeURIComponent(q)}`;
+        const apiUrl = `https://api.giftedtech.co.ke/api/search/googleimage?apikey=gifted_api_6kuv56877d&query=${encodeURIComponent(q)}`;
         const res = await axios.get(apiUrl);
         const data = res.data;
 
@@ -39,7 +39,7 @@ cmd({
             forwardingScore: 1000,
             isForwarded: true,
             forwardedNewsletterMessageInfo: {
-                newsletterJid: '120363292876277898@newsletter',
+                newsletterJid: '120363422794491778@newsletter',
                 newsletterName: "𝐇𝐀𝐍𝐒 𝐁𝐘𝐓𝐄 𝟐",
                 serverMessageId: 200,
             },

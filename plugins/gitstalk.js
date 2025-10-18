@@ -15,7 +15,7 @@ async (conn, mek, m, { from, quoted, q, reply, sender }) => {
 
         await conn.sendMessage(from, { react: { text: '⏳', key: mek.key } });
 
-        const url = `https://api.giftedtech.co.ke/api/stalk/gitstalk?apikey=gifted&username=${encodeURIComponent(q)}`;
+        const url = `https://api.giftedtech.co.ke/api/stalk/gitstalk?apikey=gifted_api_6kuv56877d&username=${encodeURIComponent(q)}`;
         const res = await fetch(url);
         const data = await res.json();
 
@@ -47,7 +47,7 @@ ${gh.bio ? `*📝 Bio:* ${gh.bio}` : ""}
             forwardingScore: 1000,
             isForwarded: true,
             forwardedNewsletterMessageInfo: {
-                newsletterJid: '120363292876277898@newsletter',
+                newsletterJid: '120363422794491778@newsletter',
                 newsletterName: "𝐇𝐀𝐍𝐒 𝐁𝐘𝐓𝐄 𝟐",
                 serverMessageId: 145,
             },

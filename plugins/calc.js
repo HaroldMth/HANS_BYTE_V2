@@ -1,45 +1,47 @@
-const { cmd } = require('../command'); // Ensure the path is correct
+const { cmd } = require('../command');
 const fetch = require('node-fetch');
 
 cmd({
-    pattern: "calc",
-    alias: ["calculate"],
-    react: "🧮",
-    desc: "Perform mathematical calculations",
-    category: "tools",
-    use: '.calc <expression>',
-    filename: __filename
-},
-async (conn, mek, m, { from, reply, q, sender }) => {
-    if (!q || !q.trim()) {
-        return await reply("Please provide a mathematical expression to calculate!");
+  pattern: 'math',
+  alias: ['solve','calc'],
+  desc: 'Solve a math expression using Hans Tech math-solver',
+  category: '🧮 Utilities',
+  react: '➗',
+  filename: __filename
+}, async (conn, mek, m, { from, args, reply, sender }) => {
+  try {
+    const expr = args.join(' ').trim();
+    if (!expr) return reply('❌ Please provide a math expression. Example: `math 1/2` or `calc 2+2*3`');
+
+    // Build API URL (encode expression)
+    const apiUrl = `https://hanstech-api.zone.id/api/math-solver?expr=${encodeURIComponent(expr)}&key=hans%7EUfvyXEb`;
+
+    // Fetch Hans Tech result
+    const res = await fetch(apiUrl, { method: 'GET' });
+    const json = await res.json();
+
+    // Expected example: { status:"success", expression:"1/2", result:0.5 }
+    if (!json || (json.status && json.status !== 'success')) {
+      console.error('Math API error:', json);
+      return reply('⚠️ Failed to solve the expression. Make sure it is a valid math expression.');
     }
-    
-    try {
-        const apiUrl = `https://apis.davidcyriltech.my.id/tools/calculate?expr=${encodeURIComponent(q)}`;
-        const response = await fetch(apiUrl);
-        const data = await response.json();
-        
-        if (!data.success || data.result === null) {
-            return await reply("Invalid mathematical expression or error in calculation!");
-        }
-        
-        // Newsletter context info
-        const newsletterContext = {
-            mentionedJid: [sender],
-            forwardingScore: 1000,
-            isForwarded: true,
-            forwardedNewsletterMessageInfo: {
-                newsletterJid: '120363292876277898@newsletter',
-                newsletterName: "𝐇𝐀𝐍𝐒 𝐁𝐘𝐓𝐄 𝐌𝐃",
-                serverMessageId: 143,
-            },
-        };
-        
-        await conn.sendMessage(from, { text: `Result: ${data.result}`, contextInfo: newsletterContext }, { quoted: mek });
-        
-    } catch (error) {
-        console.error(error);
-        reply('An error occurred while processing your request. Please try again later.');
-    }
+
+    const expression = json.expression ?? expr;
+    const result = (json.result !== undefined && json.result !== null) ? String(json.result) : 'No result';
+
+    // Nicely formatted reply
+    const message = [
+      '🧮 *Hans Tech — Math Solver*',
+      '',
+      `*Expression:* ${expression}`,
+      `*Result:* ${result}`,
+      '',
+      '🔎 Use operators like + - * / ^ and functions like sin(), cos(), sqrt(), etc.'
+    ].join('\n');
+
+    await conn.sendMessage(from, { text: message }, { quoted: mek });
+  } catch (err) {
+    console.error(err);
+    return reply(`⚠️ Error: ${err.message || err}\n\nPlease try again.`);
+  }
 });

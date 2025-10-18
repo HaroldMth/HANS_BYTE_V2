@@ -198,7 +198,7 @@ cmd({
                 forwardingScore: 1000,
                 isForwarded: true,
                 forwardedNewsletterMessageInfo: {
-                    newsletterJid: '120363292876277898@newsletter',
+                    newsletterJid: '120363422794491778@newsletter',
                     newsletterName: "𝐇𝐀𝐍𝐒 𝐁𝐘𝐓𝐄 𝐌𝐃",
                     serverMessageId: 143,
                 },
@@ -241,7 +241,7 @@ cmd({
             forwardingScore: 1000,
             isForwarded: true,
             forwardedNewsletterMessageInfo: {
-                newsletterJid: '120363292876277898@newsletter',
+                newsletterJid: '120363422794491778@newsletter',
                 newsletterName: "𝐇𝐀𝐍𝐒 𝐁𝐘𝐓𝐄 𝐌𝐃",
                 serverMessageId: 143,
             },
@@ -282,7 +282,7 @@ cmd({
             forwardingScore: 1000,
             isForwarded: true,
             forwardedNewsletterMessageInfo: {
-                newsletterJid: '120363292876277898@newsletter',
+                newsletterJid: '120363422794491778@newsletter',
                 newsletterName: "𝐇𝐀𝐍𝐒 𝐁𝐘𝐓𝐄 𝐌𝐃",
                 serverMessageId: 143,
             },
@@ -308,7 +308,7 @@ cmd({
     filename: __filename
 }, async (conn, mek, m, { from, reply, sender }) => {
     try {
-        const response = await axios.get('https://api.giftedtech.co.ke/api/fun/advice?apikey=gifted');
+        const response = await axios.get('https://api.giftedtech.co.ke/api/fun/advice?apikey=gifted_api_6kuv56877d');
         const data = response.data;
 
         let imageUrl = "https://i.ibb.co/6Rxhg321/Chat-GPT-Image-Mar-30-2025-03-39-42-AM.png";
@@ -324,7 +324,7 @@ cmd({
             forwardingScore: 1000,
             isForwarded: true,
             forwardedNewsletterMessageInfo: {
-                newsletterJid: '120363292876277898@newsletter',
+                newsletterJid: '120363422794491778@newsletter',
                 newsletterName: "𝐇𝐀𝐍𝐒 𝐁𝐘𝐓𝐄 𝐌𝐃",
                 serverMessageId: 143,
             },
@@ -350,7 +350,7 @@ cmd({
     filename: __filename
 }, async (conn, mek, m, { from, reply, sender }) => {
     try {
-        const response = await axios.get('https://api.giftedtech.co.ke/api/fun/goodnight?apikey=gifted');
+        const response = await axios.get('https://api.giftedtech.co.ke/api/fun/goodnight?apikey=gifted_api_6kuv56877d');
         const data = response.data;
 
         let imageUrl = "https://i.ibb.co/6Rxhg321/Chat-GPT-Image-Mar-30-2025-03-39-42-AM.png";
@@ -366,7 +366,7 @@ cmd({
             forwardingScore: 1000,
             isForwarded: true,
             forwardedNewsletterMessageInfo: {
-                newsletterJid: '120363292876277898@newsletter',
+                newsletterJid: '120363422794491778@newsletter',
                 newsletterName: "𝐇𝐀𝐍𝐒 𝐁𝐘𝐓𝐄 𝐌𝐃",
                 serverMessageId: 143,
             },
@@ -392,7 +392,7 @@ cmd({
     filename: __filename
 }, async (conn, mek, m, { from, reply, sender }) => {
     try {
-        const response = await axios.get('https://api.giftedtech.co.ke/api/fun/motivation?apikey=gifted');
+        const response = await axios.get('https://api.giftedtech.co.ke/api/fun/motivation?apikey=gifted_api_6kuv56877d');
         const data = response.data;
 
         let imageUrl = "https://i.ibb.co/6Rxhg321/Chat-GPT-Image-Mar-30-2025-03-39-42-AM.png";
@@ -408,7 +408,7 @@ cmd({
             forwardingScore: 1000,
             isForwarded: true,
             forwardedNewsletterMessageInfo: {
-                newsletterJid: '120363292876277898@newsletter',
+                newsletterJid: '120363422794491778@newsletter',
                 newsletterName: "𝐇𝐀𝐍𝐒 𝐁𝐘𝐓𝐄 𝐌𝐃",
                 serverMessageId: 143,
             },
@@ -423,5 +423,39 @@ cmd({
     } catch (error) {
         console.error("Error fetching motivational quote:", error);
         reply(`❌ Error: ${error.message}`);
+    }
+});
+
+
+cmd({
+    pattern: "charquote",
+    alias: ["animequote", "quotechar"],
+    react: "📝",
+    desc: "Get an anime character quote",
+    category: "📁 Fun",
+    filename: __filename
+}, async (conn, mek, m, { reply, q }) => {
+    try {
+        if (!q) return reply("❌ Please provide a character name. Example: charquote light yagami");
+
+        const character = encodeURIComponent(q);
+        const res = await fetch(`https://api.giftedtech.web.id/api/anime/char-quotes?apikey=gifted_api_6kuv56877d&character=${character}`);
+        const data = await res.json();
+
+        if (!data.success || !data.result) return reply("❌ Could not fetch quote for this character.");
+
+        const msg = `
+╭━[   *ANIME CHARACTER QUOTE*   ]━╮
+┃ 🔹 *Character:* ${data.result.character}
+┃ 🎬 *Show:* ${data.result.show}
+┃ 💬 *Quote:* "${data.result.quote}"
+┃ 🧊 *Status:* Fetched successfully!
+╰━━━━━━━━━━━━━━━━━━━━╯
+`;
+
+        reply(msg);
+    } catch (err) {
+        console.error(err);
+        reply("❌ Error fetching the quote.");
     }
 });

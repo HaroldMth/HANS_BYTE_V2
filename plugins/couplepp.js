@@ -7,7 +7,7 @@ const newsletterContext = {
   forwardingScore: 1000,
   isForwarded: true,
   forwardedNewsletterMessageInfo: {
-    newsletterJid: '120363292876277898@newsletter', // Example newsletter JID
+    newsletterJid: '120363422794491778@newsletter', // Example newsletter JID
     newsletterName: "𝐇𝐀𝐍𝐒 𝐁𝐘𝐓𝐄 2",
     serverMessageId: 143,
   },

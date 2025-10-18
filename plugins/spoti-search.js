@@ -27,7 +27,7 @@ cmd({
 
         if (q.match(/https?:\/\/open\.spotify\.com\/track\//i)) {
             // Direct URL download
-            const dlUrl = `https://api.giftedtech.web.id/api/download/spotifydl?apikey=gifted&url=${encodeURIComponent(q)}`;
+            const dlUrl = `https://api.giftedtech.web.id/api/download/spotifydl?apikey=gifted_api_6kuv56877d&url=${encodeURIComponent(q)}`;
             const dlRes = await axios.get(dlUrl);
             dlData = dlRes.data;
             if (!dlData.success || !dlData.result?.download_url)
@@ -36,7 +36,7 @@ cmd({
 
         } else {
             // Search first → then download
-            const searchUrl = `https://api.giftedtech.web.id/api/search/spotifysearch?apikey=gifted&query=${encodeURIComponent(q)}`;
+            const searchUrl = `https://api.giftedtech.web.id/api/search/spotifysearch?apikey=gifted_api_6kuv56877d&query=${encodeURIComponent(q)}`;
             const searchRes = await axios.get(searchUrl);
             const searchData = searchRes.data;
 
@@ -45,7 +45,7 @@ cmd({
 
             const first = searchData.results[0];
 
-            const dlUrl = `https://api.giftedtech.web.id/api/download/spotifydl?apikey=gifted&url=${encodeURIComponent(first.url)}`;
+            const dlUrl = `https://api.giftedtech.web.id/api/download/spotifydl?apikey=gifted_api_6kuv56877d&url=${encodeURIComponent(first.url)}`;
             const dlRes = await axios.get(dlUrl);
             dlData = dlRes.data;
 
@@ -63,7 +63,7 @@ cmd({
             forwardingScore: 1000,
             isForwarded: true,
             forwardedNewsletterMessageInfo: {
-                newsletterJid: '120363292876277898@newsletter',
+                newsletterJid: '120363422794491778@newsletter',
                 newsletterName: "𝐇𝐀𝐍𝐒 𝐁𝐘𝐓𝐄 𝟐",
                 serverMessageId: 145,
             },

@@ -1,65 +1,80 @@
 const { cmd } = require('../command');
 const fetch = require('node-fetch');
-const { writeFileSync } = require('fs');
-const { tmpdir } = require('os');
-const { join } = require('path');
+const fs = require('fs');
+const path = require('path');
 
 cmd({
     pattern: "ghibli",
-    alias: ["ghibliart", "ghibliimg"],
-    react: "🌸",
-    desc: "🎨 Generate Studio Ghibli-style art from a prompt",
-    category: "🖼️ AI",
+    alias: ["ghib", "ghiblimg"],
+    react: "🎨",
+    desc: "✨ Generate a Studio Ghibli-style image from text",
+    category: "🖼️ Image",
     filename: __filename
 }, async (conn, mek, m, { from, q, reply, sender }) => {
     try {
-        if (!q) return reply("❌ *Please provide a prompt for the Ghibli image.*\n\nExample:\n.ghibli A cute young man");
+        if (!q) return reply("❌ *Please enter a prompt to generate a Ghibli-style image.*");
 
-        const api = `https://api.giftedtech.co.ke/api/ai/text2ghibli?apikey=gifted&prompt=${encodeURIComponent(q)}`;
+        // Ensure temp folder exists
+        const tempDir = path.join(__dirname, '../temp');
+        if (!fs.existsSync(tempDir)) fs.mkdirSync(tempDir);
+
+        const filePath = path.join(tempDir, `ghibli_${Date.now()}.webp`);
+
+        // Fetch image as buffer
+        const api = `https://api.giftedtech.web.id/api/ai/text2ghibli?apikey=gifted_api_6kuv56877d&prompt=${encodeURIComponent(q)}`;
         const res = await fetch(api);
+        if (!res.ok) return reply("🚫 *Failed to fetch image from API.*");
 
-        // Check if the response is ok
-        if (!res.ok) {
-            return reply("🚫 *Failed to generate image. Try again later.*");
-        }
+        const arrayBuffer = await res.arrayBuffer();
+        const buffer = Buffer.from(arrayBuffer);
 
-        // Save image to temp file
-        const buffer = await res.buffer();
-        const filePath = join(tmpdir(), `ghibli_${Date.now()}.webp`);
-        writeFileSync(filePath, buffer);
+        // Save image
+        fs.writeFileSync(filePath, buffer);
 
-        const newsletterContext = {
+        const contextInfo = {
             mentionedJid: [sender],
             forwardingScore: 999,
             isForwarded: true,
             forwardedNewsletterMessageInfo: {
-                newsletterJid: "120363292876277898@newsletter",
+                newsletterJid: "120363422794491778@newsletter",
                 newsletterName: "𝐇𝐀𝐍𝐒 𝐁𝐘𝐓𝐄 𝟐",
-                serverMessageId: 201,
+                serverMessageId: 200,
             },
+            externalAdReply: {
+                title: `HANS BYTE MD`,
+                body: `BY HANS TECH`,
+                mediaType: 2,
+                thumbnailUrl: filePath, // optional: could generate a JPG thumbnail if needed
+                showAdAttribution: true
+            }
         };
 
         const caption = `
-╭━[ *GHIBLI ART* ]━╮
-┃ 🎨 *Prompt:* ${q}
-┃ 🖼️ *Status:* Generated
-╰━━━━━━━━━━━━━━━━━━╯
+╭━[   *GHIBLI IMAGE*   ]━╮
+┃ 🔹 *Prompt:* ${q}
+┃ 🖌️ *Style:* Studio Ghibli
+┃ 🧊 *Status:* Generated successfully!
+╰━━━━━━━━━━━━━━━━━━━━╯
 
-🌟 *Powered by HANS BYTE V2*
-        `.trim();
+🚀 *𝐇𝐀𝐍𝐒 𝐁𝐘𝐓𝐄 𝟐*
+`.trim();
 
+        // Send the image
         await conn.sendMessage(
             from,
             {
-                image: { url: filePath },
+                image: fs.readFileSync(filePath),
                 caption,
-                contextInfo: newsletterContext
+                contextInfo
             },
             { quoted: mek }
         );
 
+        // Delete temp file
+        fs.unlinkSync(filePath);
+
     } catch (err) {
         console.error(err);
-        reply("⚠️ *An error occurred while generating the Ghibli image.*");
+        reply("⚠️ *An error occurred while generating the Ghibli image.*\nPlease try again later.");
     }
 });

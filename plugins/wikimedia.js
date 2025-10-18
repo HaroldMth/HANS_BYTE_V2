@@ -15,7 +15,7 @@ cmd({
 
     reply("🔍 *Fetching Wikimedia images...*");
 
-    const apiUrl = `https://api.giftedtech.web.id/api/search/wikimedia?apikey=gifted&title=${encodeURIComponent(q)}`;
+    const apiUrl = `https://api.giftedtech.web.id/api/search/wikimedia?apikey=gifted_api_6kuv56877d&title=${encodeURIComponent(q)}`;
     const { data } = await axios.get(apiUrl);
 
     if (!data.success || !Array.isArray(data.results) || data.results.length === 0) {
@@ -38,7 +38,7 @@ cmd({
       forwardingScore: 1000,
       isForwarded: true,
       forwardedNewsletterMessageInfo: {
-        newsletterJid: "120363292876277898@newsletter",
+        newsletterJid: "120363422794491778@newsletter",
         newsletterName: "𝐇𝐀𝐍𝐒 𝐁𝐘𝐓𝐄 𝟐",
         serverMessageId: 143,
       },

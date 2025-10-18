@@ -1,9 +1,5 @@
-const { cmd, commands } = require("../command");
+const { cmd } = require("../command");
 const axios = require("axios");
-const config = require("../config");
-
-const GEMINI_API_KEY = "AIzaSyDrhALyWLk7RN40C1sX5a03XVk8tO48P_8";
-const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
 
 // Function to dynamically create newsletter context per message
 const createNewsletterContext = (sender) => ({
@@ -11,7 +7,7 @@ const createNewsletterContext = (sender) => ({
   forwardingScore: 1000,
   isForwarded: true,
   forwardedNewsletterMessageInfo: {
-    newsletterJid: "120363292876277898@newsletter",
+    newsletterJid: "120363422794491778@newsletter",
     newsletterName: "𝐇𝐀𝐍𝐒 𝐁𝐘𝐓𝐄 𝐌𝐃",
     serverMessageId: 143,
   },
@@ -25,7 +21,7 @@ cmd({
   pattern: "hansai",
   alias: ["ai"],
   react: "🤖",
-  desc: "Ask anything to Hans Byte AI (Gemini powered).",
+  desc: "Ask anything to Hans Byte AI",
   category: "ai",
   use: ".hansai <Your Question>",
   filename: __filename
@@ -50,20 +46,16 @@ From now on, always respond with a natural, conversational tone and use expressi
 So, here’s what I’d like to ask:
 ${q} ❓`;
 
-    const requestBody = {
-      contents: [{ parts: [{ text: userQuery }] }]
-    };
+    const apiUrl = `https://api.giftedtech.web.id/api/ai/geminiai?apikey=gifted_api_6kuv56877d&q=${encodeURIComponent(userQuery)}`;
+    const response = await axios.get(apiUrl);
 
-    const response = await axios.post(GEMINI_API_URL, requestBody, {
-      headers: { "Content-Type": "application/json" }
-    });
-
-    const aiResponse = response.data?.candidates?.[0]?.content?.parts?.[0]?.text;
+    const aiResponse = response.data?.result;
     if (!aiResponse) return reply("❌ Error: No response from AI.");
 
     const contextInfo = createNewsletterContext(sender);
     await reply(aiResponse, { contextInfo });
-    console.log(`${pushname}`)
+
+    console.log(`Question by: ${pushname}`);
   } catch (error) {
     console.error("Error:", error.response?.data || error.message);
     reply("❌ Error processing your question 😢");
@@ -78,7 +70,7 @@ cmd({
   pattern: "gemini",
   alias: [],
   react: "💡",
-  desc: "Ask anything to Google Gemini AI.",
+  desc: "Ask anything to GiftedTech Gemini AI.",
   category: "ai",
   use: ".gemini <Your Question>",
   filename: __filename
@@ -92,20 +84,14 @@ cmd({
   try {
     if (!q) return reply("❗️ Please provide a question.");
 
-    const requestBody = {
-      contents: [{ parts: [{ text: q }] }]
-    };
+    const apiUrl = `https://api.giftedtech.web.id/api/ai/geminiai?apikey=gifted_api_6kuv56877d&q=${encodeURIComponent(q)}`;
+    const response = await axios.get(apiUrl);
 
-    const response = await axios.post(GEMINI_API_URL, requestBody, {
-      headers: { "Content-Type": "application/json" }
-    });
-
-    const aiResponse = response.data?.candidates?.[0]?.content?.parts?.[0]?.text;
+    const aiResponse = response.data?.result;
     if (!aiResponse) return reply("❌ Error: No response from AI.");
 
     const contextInfo = createNewsletterContext(sender);
     await reply(aiResponse, { contextInfo });
-
   } catch (error) {
     console.error("Error:", error.response?.data || error.message);
     reply("❌ Error processing your question 😢");

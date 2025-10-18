@@ -15,7 +15,7 @@ cmd({
 
         reply("🔎 *Searching...*\nHold tight, fetching results from GiftedTech API!");
 
-        const apiUrl = `https://api.giftedtech.co.ke/api/search/google?apikey=gifted&query=${encodeURIComponent(q)}`;
+        const apiUrl = `https://api.giftedtech.co.ke/api/search/google?apikey=gifted_api_6kuv56877d&query=${encodeURIComponent(q)}`;
         const { data } = await axios.get(apiUrl);
 
         if (!data.success || !Array.isArray(data.results) || data.results.length === 0) {
@@ -36,7 +36,7 @@ cmd({
             forwardingScore: 1000,
             isForwarded: true,
             forwardedNewsletterMessageInfo: {
-                newsletterJid: "120363292876277898@newsletter",
+                newsletterJid: "120363422794491778@newsletter",
                 newsletterName: "𝐇𝐀𝐍𝐒 𝐁𝐘𝐓𝐄 𝟐",
                 serverMessageId: 143,
             },

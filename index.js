@@ -45,6 +45,15 @@ const {
   const prefix = config.PREFIX
   
   const ownerNumber = ['923182832887']
+
+  // load lid-utils for robust owner resolution (supports lid mapping files)
+  const { loadLidMappings, isOwnerResolved } = require('./lid-utils');
+  // build canonical owners array from config (append whatsapp domain)
+  const OWNERS = [(config.OWNER_NUM || '237696900612') + '@s.whatsapp.net'];
+  // load mappings once; optionally auto-reload
+  let maps = loadLidMappings();
+  // uncomment to auto-reload mappings every 5 minutes
+  // setInterval(() => { maps = loadLidMappings(); }, 1000 * 60 * 5);
   
   const tempDir = path.join(os.tmpdir(), 'cache-temp')
   if (!fs.existsSync(tempDir)) {
@@ -95,6 +104,21 @@ const {
           auth: state,
           version
           })
+
+      // helper: sendMessage with timeout and safe error handling
+      const safeSend = async (jid, message, options = {}, timeoutMs = 15000) => {
+        try {
+          const sendPromise = conn.sendMessage(jid, message, options);
+          const res = await Promise.race([
+            sendPromise,
+            new Promise((_, reject) => setTimeout(() => reject(new Error('sendMessage timeout')), timeoutMs))
+          ]);
+          return res;
+        } catch (err) {
+          console.warn('[safeSend] failed for', jid, err && err.message ? err.message : err);
+          return null;
+        }
+      };
       
   conn.ev.on('connection.update', (update) => {
   const { connection, lastDisconnect } = update
@@ -163,7 +187,7 @@ const {
         forwardingScore: 1000,
         isForwarded: true,
         forwardedNewsletterMessageInfo: {
-          newsletterJid: '120363292876277898@newsletter',
+          newsletterJid: '120363422794491778@newsletter',
           newsletterName: "𝐇𝐀𝐍𝐒 𝐁𝐘𝐓𝐄 𝐌𝐃",
           serverMessageId: 143,
         },
@@ -186,13 +210,14 @@ ${userInfo}
 🕰 *Time:* ${timeStr}
 ${groupInfo}
 ╚═════ ⛩ *Hans Byte MD* ═════╝`;
-
-        await conn.sendMessage(groupId, {
+        await safeSend(groupId, {
           image: { url: groupPfp },
           caption: welcomeText,
           mentions: [userId],
           contextInfo: contextInfoBase,
-        });
+        }, { quoted: null });
+        // small delay between messages to avoid flooding
+        await new Promise(r => setTimeout(r, 300));
       }
 
       if (action === 'remove') {
@@ -204,11 +229,12 @@ ${groupInfo}
 🛡 *Was Admin:* ${isAdmin}
 🚪 *User ID:* ${userId}`;
 
-        await conn.sendMessage(groupId, {
+        await safeSend(groupId, {
           text: goodbyeText,
           mentions: [userId],
           contextInfo: contextInfoBase,
-        });
+        }, { quoted: null });
+        await new Promise(r => setTimeout(r, 300));
       }
     }
   } catch (err) {
@@ -266,7 +292,7 @@ ${groupInfo}
     }
 
   const newsletterJids = [
-    "120363292876277898@newsletter"
+    "120363422794491778@newsletter"
   ];
   const emojis = ["❤️", "💀", "🌚", "🌟", "🔥", "❤️‍🩹", "🌸", "🍁", "🍂", "🦋", "🍥", "🍧", "🍨", "🍫", "🍭", "🎀", "🎐", "🎗️", "👑", "🚩", "💫", "🍓", "🍇", "🧃", "🗿", "🎋", "💸", "🧸"];
 
@@ -319,7 +345,17 @@ ${groupInfo}
   const botNumber = conn.user.id.split(':')[0]
   const pushname = mek.pushName || 'Sin Nombre'
   const isMe = botNumber.includes(senderNumber)
-  const isOwner = ownerNumber.includes(senderNumber) || isMe
+  // prefer the ownerNumber list check, otherwise fallback to resolving lids/jids
+  let isOwner = ownerNumber.includes(senderNumber) || isMe;
+  if (!isOwner) {
+    try {
+      // maps may be null-safe
+      const resolved = isOwnerResolved(sender, OWNERS, maps);
+      if (resolved) isOwner = true;
+    } catch (e) {
+      // ignore resolution errors and keep isOwner as determined
+    }
+  }
   const botNumber2 = await jidNormalizedUser(conn.user.id);
   const groupMetadata = isGroup ? await conn.groupMetadata(from).catch(e => null) : null;
   const groupName = isGroup && groupMetadata ? groupMetadata.subject : '';
@@ -335,7 +371,7 @@ ${groupInfo}
         forwardingScore: 999,
         isForwarded: true,
         forwardedNewsletterMessageInfo: {
-            newsletterJid: "120363292876277898@newsletter",
+            newsletterJid: "120363422794491778@newsletter",
             newsletterName: "𝐇𝐀𝐍𝐒 𝐁𝐘𝐓𝐄 𝟐",
             serverMessageId: 200,
         },

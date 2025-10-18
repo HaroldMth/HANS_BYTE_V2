@@ -16,7 +16,7 @@ async (conn, mek, m, { from, args, reply, sender }) => {
         forwardingScore: 1000,
         isForwarded: true,
         forwardedNewsletterMessageInfo: {
-            newsletterJid: '120363292876277898@newsletter',
+            newsletterJid: '120363422794491778@newsletter',
             newsletterName: "𝐇𝐀𝐍𝐒 𝐁𝐘𝐓𝐄 𝐌𝐃",
             serverMessageId: 143,
         },
@@ -136,7 +136,7 @@ async (conn, mek, m, { from, args, reply, sender }) => {
         forwardingScore: 1000,
         isForwarded: true,
         forwardedNewsletterMessageInfo: {
-            newsletterJid: '120363292876277898@newsletter',
+            newsletterJid: '120363422794491778@newsletter',
             newsletterName: "𝐇𝐀𝐍𝐒 𝐁𝐘𝐓𝐄",
             serverMessageId: 143,
         },
@@ -220,7 +220,7 @@ async (conn, mek, m, { from, args, reply, sender }) => {
             await robin.sendPresenceUpdate('recording', from);
 
             try {
-                const apikey = 'gifted';
+                const apikey = 'gifted_api_6kuv56877d';
                 const apiUrl = `https://api.giftedtech.co.ke/api/ephoto360/${effect.endpoint}?apikey=${apikey}&text=${encodeURIComponent(inputText)}`;
 
                 // Fetch JSON response
