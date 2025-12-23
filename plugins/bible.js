@@ -10,11 +10,9 @@ cmd({
 }, async (conn, mek, m, { from, args, reply }) => {
   try {
     const reference = args.join(' ').trim();
-    if (!reference) {
-      return reply('🙏 Please provide a Bible reference. Example: `bible John 3:16`');
-    }
+    if (!reference) return reply('🙏 Please provide a Bible reference. Example: `bible John 3:16`');
 
-    // Parse "Book chapter:verse[-end]" (simple)
+    // Parse "Book chapter:verse[-end]"
     const refMatch = reference.match(/^(.+?)\s+(\d+)(?::(\d+(?:-\d+)?))?$/i);
     if (!refMatch) return reply('⚠️ Could not parse that reference. Use format like `John 3:16` or `Genesis 1`.');
 
@@ -25,8 +23,7 @@ cmd({
     let verseStart = null, verseEnd = null;
     if (versePart) {
       if (versePart.includes('-')) {
-        const [s, e] = versePart.split('-').map(Number);
-        verseStart = s; verseEnd = e;
+        [verseStart, verseEnd] = versePart.split('-').map(Number);
       } else {
         verseStart = parseInt(versePart, 10);
         verseEnd = verseStart;
@@ -34,7 +31,7 @@ cmd({
     }
 
     // Build API URL
-    let apiUrl = `https://hanstech-api.zone.id/api/bible?book=${encodeURIComponent(book)}&chapter=${chapter}&key=hans%7EUfvyXEb`;
+    let apiUrl = `https://hanstech-api.zone.id/api/bible?book=${encodeURIComponent(book)}&chapter=${chapter}&key=hans~ikDKbXN`;
     if (verseStart) apiUrl += `&verse=${verseStart}`;
 
     const res = await fetchJson(apiUrl);
@@ -42,7 +39,11 @@ cmd({
       return reply('⚠️ Could not fetch the verse. Please check your reference.');
     }
 
-    let message = `✝️ *${res.data.book} ${chapter}${verseStart ? ':' + verseStart + (verseEnd && verseEnd !== verseStart ? '-' + verseEnd : '') : ''}* — *${res.data.version}*\n\n`;
+    // Format message
+    let refText = `${res.data.book} ${chapter}`;
+    if (verseStart) refText += `:${verseStart}${verseEnd && verseEnd !== verseStart ? '-' + verseEnd : ''}`;
+
+    let message = `✝️ *${refText}* — *${res.data.version}*\n\n`;
     message += `${res.data.text}\n\n🕊️ *May God bless you as you meditate on His Word.*`;
 
     await conn.sendMessage(from, { text: message }, { quoted: mek });

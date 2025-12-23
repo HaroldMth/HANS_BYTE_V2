@@ -125,7 +125,7 @@ ${data.description}
                 title: data.title,
                 body: `${data.followers} — WhatsApp Channel`,
                 mediaType: 1,
-                thumbnailUrl: 'https://i.ibb.co/9gCjCwp/OIG4-E-D0-QOU1r4-Ru-CKuf-Nj0o.jpg', // WhatsApp logo or use a better image if available
+                thumbnailUrl: 'https://files.catbox.moe/kzqia3.jpeg', // WhatsApp logo or use a better image if available
                 sourceUrl: q
             }
         };

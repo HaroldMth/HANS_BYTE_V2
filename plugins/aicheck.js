@@ -53,8 +53,7 @@ Use this as a guideline, not absolute certainty.
                 body: `AI: ${aiPercent} | Human: ${humanPercent}`,
                 mediaType: 1,
                 showAdAttribution: true,
-                thumbnailUrl: "https://i.ibb.co/9gCjCwp/OIG4-E-D0-QOU1r4-Ru-CKuf-Nj0o.jpg", // example thumbnail, you can replace
-                sourceUrl: "https://apis.davidcyriltech.my.id/api/detect"
+                thumbnailUrl: "https://files.catbox.moe/kzqia3.jpeg"
             }
         };
 

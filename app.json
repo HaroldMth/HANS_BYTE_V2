@@ -1,185 +1,232 @@
 {
-  "name": "𝕺𝕭𝕴𝕿𝕺-𝕸𝕯",
-  "description": "ᴊᴀᴠᴀsᴄʀɪᴘᴛ ᴡʜᴀᴛsᴀᴘᴘ ʙᴏᴛ ᴄʀᴇᴀᴛᴇᴅ ʙʏ ᴀᴡᴀɪs",
+  "name": "HANS-BYTE-V1",
+  "description": "JavaScript WhatsApp Bot powered by Hans Tech",
   "logo": "https://files.catbox.moe/zovr55.jpg",
-  "keywords": ["bot"],
+  "keywords": ["whatsapp", "bot", "baileys", "hans-tech"],
   "success_url": "/",
+  "stack": "container",
 
-    "stack": "container",
   "env": {
     "SESSION_ID": {
-      "description": "Put the session-id here.",
+      "description": "Your WhatsApp session ID",
       "required": true,
       "value": ""
-    },  
-    
-    "ALIVE_IMG": {
-      "description": "paste your image url if you don't have you can use this public url.",
-      "required": true,
-      "value": "https://files.catbox.moe/zovr55.jpg"
-    }, 
-    
-    "ALIVE_MSG": {
-      "description": "paste your alive message hear.",
-      "required": true,
-      "value": "•°- ß Ə ʌ υ ʈ ı ƒ υ ɭ - °•🩷🌸🤤.!!"
     },
-    
+
+    "OWNER_NUM": {
+      "description": "Owner phone number (with country code)",
+      "required": true,
+      "value": ""
+    },
+
+    "OWNER_NAME": {
+      "description": "Bot owner name",
+      "required": true,
+      "value": "Hans Tech"
+    },
+
+    "SUDO": {
+      "description": "Sudo users numbers (comma separated)",
+      "required": false,
+      "value": ""
+    },
+
+    "BOT_NAME": {
+      "description": "Bot display name",
+      "required": true,
+      "value": "HANS-BYTE"
+    },
+
     "PREFIX": {
-      "description": "paste your bot prefix note! Don't apply null prefix.",
+      "description": "Bot command prefix",
       "required": true,
-      "value": "."
+      "value": "!"
     },
-    
+
+    "CAPTION": {
+      "description": "Footer caption used in menus",
+      "required": false,
+      "value": "Powered by Hans Tech"
+    },
+
+    "ALIVE_IMG": {
+      "description": "Alive command image URL",
+      "required": false,
+      "value": "https://files.catbox.moe/zovr55.jpg"
+    },
+
     "MODE": {
-      "description": "select your bot work type public-private-inbox-group.",
+      "description": "Bot mode: public / private / inbox / group",
       "required": true,
       "value": "public"
-    }, 
+    },
 
-    "AUTO_VOICE": {
-      "description": "Make it true if you want bot auto voice.",
-      "required": true,
-      "value": "true"
-    }, 
+    "ALWAYS_ONLINE": {
+      "description": "Keep bot always online",
+      "required": false,
+      "value": "false"
+    },
 
-    "AUTO_REPLY": {
-      "description": "Make it true if you want bot auto reply.",
-      "required": true,
-      "value": "true"
-    }, 
+    "READ_MESSAGE": {
+      "description": "Mark messages as read automatically",
+      "required": false,
+      "value": "false"
+    },
 
-    "AUTO_TYPING": {
-      "description": "Make it true if you want auto typing.",
+    "AUTO_READ": {
+      "description": "Auto read incoming chats",
       "required": false,
       "value": "true"
+    },
+
+    "AUTO_TYPING": {
+      "description": "Show typing indicator",
+      "required": false,
+      "value": "true"
+    },
+
+    "AUTO_RECORDING": {
+      "description": "Show recording indicator",
+      "required": false,
+      "value": "true"
+    },
+
+    "AUTO_VOICE": {
+      "description": "Enable auto voice replies",
+      "required": false,
+      "value": "false"
     },
 
     "AUTO_STICKER": {
-      "description": "Make it true if you want bot auto sticker.",
-      "required": true,
-      "value": "true"
-    }, 
-
-    "AUTO_READ_STATUS": {
-      "description": "Make it true if you want bot auto auto_read_status.",
-      "required": true,
-      "value": "true"
-    }, 
-
-    "ANTI_LINK": {
-      "description": "Make it true if you want bot auto remove group link.",
-      "required": true,
-      "value": "true"
-    },
-
-    "ANTI_BAD": {
-      "description": "Make it true if you want bot auto delete bad words from group example xxx porn etc.",
-      "required": true,
-      "value": "true"
-    }, 
-
-   "CURRENT_STATUS": {
-      "description": "Make it true if want automatic voice reply .",
+      "description": "Auto convert images to stickers",
       "required": false,
       "value": "false"
-    }, 
+    },
 
-    "FAKE_RECORDING": {
-      "description": "Make it true if you want bot fake record.",
-      "required": true,
+    "CUSTOM_REACT": {
+      "description": "Enable custom emoji reactions",
+      "required": false,
       "value": "false"
+    },
+
+    "CUSTOM_REACT_EMOJIS": {
+      "description": "Comma separated emojis for reactions",
+      "required": false,
+      "value": "❤️,💖,💝,🔥,✨"
     },
 
     "AUTO_REACT": {
-      "description": "Make it true if you want bot AutoReact.",
-      "required": true,
-      "value": "true"
+      "description": "Auto react to messages",
+      "required": false,
+      "value": "false"
     },
 
     "OWNER_REACT": {
-      "description": "Make it true if you want bot OwnerReact.",
-      "required": true,
-      "value": "true"
-    
-    }, 
+      "description": "React to owner messages",
+      "required": false,
+      "value": "false"
+    },
 
-   "ALWAYS_ONLINE": {
-      "description": "Make it true if want automatic voice reply .",
+    "REACT_EMOJI": {
+      "description": "Default reaction emoji",
+      "required": false,
+      "value": "❤️"
+    },
+
+    "PACK_INFO": {
+      "description": "Sticker pack info format: AUTHOR;PACKNAME",
+      "required": false,
+      "value": "Hans Tech;HANS-BYTE"
+    },
+
+    "AUTO_READ_STATUS": {
+      "description": "Auto read WhatsApp status",
       "required": false,
       "value": "true"
-    }, 
+    },
 
-  "AUTO_STATUS_REPLY": {
-      "description": "Make it true if want automatic status reply .",
+    "AUTO_STATUS_SEEN": {
+      "description": "Mark status as seen",
       "required": false,
       "value": "true"
-    },    
+    },
 
-    "BOT_NAME": {
-      "description": "write hear your name.",
-      "required": true,
-      "value": "OBITO-MD"
-    }, 
+    "AUTO_STATUS_REACT": {
+      "description": "React to statuses automatically",
+      "required": false,
+      "value": "true"
+    },
 
-    "HEART_REACT": {
-      "description": "Make it true if you want bot only heart ♥️ emjois reaction .",
-      "required": true,
+    "AUTO_REPLY_STATUS": {
+      "description": "Reply automatically to status",
+      "required": false,
       "value": "false"
-    }, 
+    },
 
-    "READ_MESSAGE": {
-      "description": "Make it true if you want bot read your all sms just now.",
-      "required": true,
+    "AUTO_STATUS_REPLY": {
+      "description": "Enable status reply feature",
+      "required": false,
       "value": "false"
-    }, 
-    "CAPTION": {
-      "description": "enter your caption if you want to show on menu.",
-      "required": true,
-      "value": "*ᴘᴏᴡᴅᴇʀᴇᴅ ʙʏ ᴀᴡᴀɪs*"
-    }, 
+    },
+
     "AUTO_STATUS__MSG": {
-      "description": "enter your caption if you want to show on status reply.",
-      "required": true,
-      "value": "YOUR STATUS SEEN BY OBITO-MD"
-    },    
-
-    "CUSTOM_REACT_EMOJIS": {
-      "description": "set customs emojis that bot will react.",
-      "required": true,
-      "value": "💝,💖,💗,❤️‍🔥,❤️‍🩹,❤️,🩷,🧡,💛,💚,💙,🩵,💜,🤎,🖤,🩶,🤍"
-    },
-    
-    "CUSTOM_REACT": {
-      "description": "customs reaction emojis that bot will react.",
-      "required": true,
-      "value": "false"
+      "description": "Message sent when replying to status",
+      "required": false,
+      "value": "Status seen by HANS-BYTE"
     },
 
-    "AUTHOR": {
-      "description": "stickerpack author name",
-      "required": true,
-      "value": "OBITO MD"
+    "AUTO_REPLY_TEXT": {
+      "description": "Text used for auto replies",
+      "required": false,
+      "value": ""
     },
 
-    "PACKNAME": {
-      "description": "stickerpack pack name",
-      "required": true,
-      "value": "created by"
+    "AUTOLIKESTATUS": {
+      "description": "Auto like WhatsApp statuses",
+      "required": false,
+      "value": "true"
     },
 
     "ANTI_DEL_PATH": {
-      "description": "set 'same' if you want anti deleted message on same chat where it was deleted.",
-      "required": true,
+      "description": "Anti delete message location (log/same)",
+      "required": false,
       "value": "log"
+    },
+
+    "ANTILINK": {
+      "description": "Enable anti-link system",
+      "required": false,
+      "value": "true"
+    },
+
+    "ANTILINK_ACTION": {
+      "description": "Action on link detection (warn/kick/delete)",
+      "required": false,
+      "value": "warn"
+    },
+
+    "ANTIDELELTE": {
+      "description": "Enable anti delete messages",
+      "required": false,
+      "value": "true"
+    },
+
+    "WELCOME": {
+      "description": "Enable welcome messages in groups",
+      "required": false,
+      "value": "true"
+    },
+
+    "OMDB_API_KEY": {
+      "description": "OMDb API key for movie commands",
+      "required": false,
+      "value": ""
     }
+  },
 
-
-},
-
-     "buildpacks": [
-        {
-            "url": "https://github.com/heroku/heroku-buildpack-nodejs.git"
-        }
-     ]
+  "buildpacks": [
+    {
+      "url": "https://github.com/heroku/heroku-buildpack-nodejs.git"
+    }
+  ]
 }

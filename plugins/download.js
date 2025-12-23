@@ -108,7 +108,7 @@ cmd({
                 title: "🎬 Facebook Video Downloader",
                 body: title,
                 mediaType: 2,
-                thumbnailUrl: "https://i.ibb.co/9gCjCwp/OIG4-E-D0-QOU1r4-Ru-CKuf-Nj0o.jpg", // placeholder, you can change to dynamic
+                thumbnailUrl: "https://files.catbox.moe/kzqia3.jpeg", // placeholder, you can change to dynamic
                 showAdAttribution: true,
                 sourceUrl: q
             }

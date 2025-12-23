@@ -17,7 +17,7 @@ async (conn, mek, m, { from, args, q, reply, react }) => {
         const { data } = await axios.get(apiUrl);
 
         if (!data.status || !data.data) {
-            await react("❌");
+            await conn.sendMessage(from, { react: { text: "❌", key: m.key } });
             return reply(`No information found for *${q}*. Please check the country name.`);
         }
 
@@ -57,7 +57,8 @@ async (conn, mek, m, { from, args, q, reply, react }) => {
             contextInfo: newsletterContext
         }, { quoted: mek });
 
-        await react("✅");
+        await conn.sendMessage(from, { react: { text: "✅", key: m.key } });
+
 
     } catch (e) {
         console.error("Error in countryinfo command:", e);

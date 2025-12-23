@@ -131,7 +131,7 @@ ${selected.map(url => `<img src="${url}" alt="${parsed.search_query}" class="ai-
                         title: "Hans Byte 2",
                         body: "BY HANS TECH",
                         mediaType: 2,
-                        thumbnailUrl: 'https://i.ibb.co/9gCjCwp/OIG4-E-D0-QOU1r4-Ru-CKuf-Nj0o.jpg',
+                        thumbnailUrl: 'https://files.catbox.moe/kzqia3.jpeg',
                         sourceUrl: "https://www.whatsapp.com/channel/0029VaZDIdxDTkKB4JSWUk1O"
                     }
                 }

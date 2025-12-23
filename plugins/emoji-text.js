@@ -1,5 +1,5 @@
 const { cmd, commands } = require('../command');
-const config = require('../config');
+
 
 cmd(
   {

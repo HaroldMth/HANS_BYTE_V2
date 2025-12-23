@@ -188,7 +188,7 @@ cmd({
 }, async (conn, mek, m, { reply, sender, from }) => {
     try {
         let res = await fetchJson("https://official-joke-api.appspot.com/random_joke");
-        let imageUrl = "https://i.ibb.co/PS5DZdJ/Chat-GPT-Image-Mar-30-2025-12-53-39-PM.png";
+        let imageUrl = "https://files.catbox.moe/wdi4cg.jpeg";
 
         if (res && res.setup && res.punchline) {
             const jokeMessage = `${res.setup}\n\n👉 ${res.punchline}`;

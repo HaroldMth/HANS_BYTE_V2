@@ -17,12 +17,19 @@ cmd({
   const { from, quoted, reply, sender } = extra;
 
   try {
-    const messageToProcess = msg.quoted ? msg.quoted : msg;
-    const mimeType = (messageToProcess.msg || messageToProcess).mimetype || '';
+    const messageToProcess = msg.quoted || msg;
 
-    if (!mimeType || !mimeType.startsWith("image")) {
-      throw "🌻 Please reply to an image.";
+    const mimeType =
+      messageToProcess.mimetype ||
+      messageToProcess.msg?.mimetype ||
+      messageToProcess.message?.imageMessage?.mimetype ||
+      "";
+
+    if (!mimeType.startsWith("image/")) {
+      return reply("🌻 Please reply to an image.");
     }
+
+    
 
     // Download image
     const imageBuffer = await messageToProcess.download();

@@ -10,7 +10,7 @@ cmd({
   filename: __filename
 }, async (suki, mek, m, { from, reply }) => {
   const jid = from
-  const IMG_URL = 'https://i.ibb.co/PS5DZdJ/Chat-GPT-Image-Mar-30-2025-12-53-39-PM.png'
+  const IMG_URL = 'https://files.catbox.moe/wdi4cg.jpeg'
 
   async function step(name, payload) {
     try {

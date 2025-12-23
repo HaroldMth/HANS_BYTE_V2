@@ -33,7 +33,7 @@ async (conn, mek, m, { from, quoted, body, isCmd, command, args, q, isGroup, sen
         const fileInfo = {
             name: data.name || 'Unknown File',
             downloadLink: data.download_link || '',
-            thumbnail: "https://i.ibb.co/PS5DZdJ/Chat-GPT-Image-Mar-30-2025-12-53-39-PM.png" // Thumbnail URL
+            thumbnail: "https://files.catbox.moe/wdi4cg.jpeg" // Thumbnail URL
         };
 
         if (!fileInfo.downloadLink) return reply("❌ No download link found for this file.");

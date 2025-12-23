@@ -98,24 +98,7 @@ cmd({
   reply("✅ About updated!");
 });
 
-// 🚪 Leave Group
-cmd({
-  pattern: 'leave',
-  alias: [],
-  desc: 'Force the bot to leave the current group (Owner only).',
-  react: '🚪',
-  use: '.leave',
-  category: 'Owner',
-  filename: __filename
-}, async (conn, mek, m, { from, sender, reply, isGroup, isOwner }) => {
-  if (!isOwner) {
-    const resolvedIsOwner = isOwnerResolved(sender, OWNERS, maps);
-    if (!resolvedIsOwner) return reply("🚫 Owner only command!");
-  }
-  if (!isGroup) return reply("❌ This command can only be used in a group.");
-  await reply("👋 Leaving group...");
-  await conn.groupLeave(from);
-});
+
 
 // 📂 List Groups
 cmd({

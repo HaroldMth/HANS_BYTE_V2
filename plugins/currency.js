@@ -60,7 +60,7 @@ async (conn, mek, m, { from, quoted, q, reply, sender }) => {
                 title: "💱 Currency Converter",
                 body: `${amount} ${fromCurr.toUpperCase()} → ${toCurr.toUpperCase()}`,
                 mediaType: 1,
-                thumbnailUrl: "https://i.ibb.co/9gCjCwp/OIG4-E-D0-QOU1r4-Ru-CKuf-Nj0o.jpg", // example icon, replace if you want
+                thumbnailUrl: "https://files.catbox.moe/kzqia3.jpeg", // example icon, replace if you want
                 sourceUrl: "https://apis.davidcyriltech.my.id/tools/convert"
             }
         };

@@ -27,7 +27,7 @@ cmd({
     }
 
     // Fetch latest version data from GitHub
-    const rawVersionUrl = 'https://raw.githubusercontent.com/Haroldmth/HANS_BYTE/main/data/changelog.json';
+    const rawVersionUrl = 'https://raw.githubusercontent.com/Haroldmth/HANS_BYTE_V2/main/data/changelog.json';
     let latestVersion = 'Unknown';
     let latestChangelog = 'No changelog available.';
     try {

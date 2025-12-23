@@ -75,20 +75,27 @@ const {
   setInterval(clearTempDir, 5 * 60 * 1000);
   
   //===================SESSION-AUTH============================
-  if (!fs.existsSync(__dirname + '/sessions/creds.json')) {
-  if(!config.SESSION_ID) return console.log('Please add your session id to config.js or .env')
-  const sessdata = config.SESSION_ID
-  const filer = File.fromURL(`https://mega.nz/file/${sessdata}`)
+if (!fs.existsSync(__dirname + '/sessions/creds.json')) {
+  if (!config.SESSION_ID)
+    return console.log('Please add your session id to config.js or .env');
+
+  // 🔪 Remove HANS-BYTE~ prefix if present
+  const sessdata = config.SESSION_ID.replace(/^HANS-BYTE~/, '');
+
+  const filer = File.fromURL(`https://mega.nz/file/${sessdata}`);
   filer.download((err, data) => {
-  if(err) throw err
-  fs.writeFile(__dirname + '/sessions/creds.json', data, () => {
-  console.log("Session downloaded ✅")
-  })})}
-  
-  const express = require("express");
-  const app = express();
-  const port = process.env.PORT || 9090;
-  
+    if (err) throw err;
+
+    fs.writeFile(__dirname + '/sessions/creds.json', data, () => {
+      console.log("Session downloaded ✅");
+    });
+  });
+}
+
+const express = require("express");
+const app = express();
+const port = process.env.PORT || 9090;
+
   //=============================================
   
   async function connectToWA() {
@@ -138,7 +145,8 @@ const {
   console.log('Bot connected to whatsapp ✅')
   
   let up = `*YOUR BOT  ACTIVE NOW ENJOY♥️*\n\n*PREFIX:* ${prefix}`;
-    conn.sendMessage(conn.user.id, { image: { url: `https://i.ibb.co/9gCjCwp/OIG4-E-D0-QOU1r4-Ru-CKuf-Nj0o.jpg` }, caption: up })
+  
+    conn.sendMessage(conn.user.id, { image: { url: `https://files.catbox.moe/kzqia3.jpeg` }, caption: up })
   }
   })
   conn.ev.on('creds.update', saveCreds)
@@ -167,7 +175,7 @@ const {
     try {
       groupPfp = await conn.profilePictureUrl(groupId, 'image');
     } catch {
-      groupPfp = 'https://i.ibb.co/9gCjCwp/OIG4-E-D0-QOU1r4-Ru-CKuf-Nj0o.jpg'; // Default image if group profile picture is not available
+      groupPfp = 'https://files.catbox.moe/kzqia3.jpeg'; // Default image if group profile picture is not available
     }
 
     const now = new Date();
@@ -196,7 +204,7 @@ const {
           mediaType: 2, // URL preview
           title: action === 'add' ? '👋 Welcome to the group!' : 'Goodbye 👋 from Hans Byte',
           body: "Click to open Hans Byte MD Channel",
-          thumbnailUrl: 'https://i.ibb.co/9gCjCwp/OIG4-E-D0-QOU1r4-Ru-CKuf-Nj0o.jpg', // try bright and square image
+          thumbnailUrl: 'https://files.catbox.moe/kzqia3.jpeg', // try bright and square image
           sourceUrl: 'https://www.whatsapp.com/channel/0029VaZDIdxDTkKB4JSWUk1O', // your invite or channel link
           renderLargerThumbnail: false,
         }
@@ -379,7 +387,7 @@ ${groupInfo}
             title: `HANS BYTE MD`,
             body: `BY HANS TECH`,
             mediaType: 2,
-            thumbnailUrl: "https://i.ibb.co/9gCjCwp/OIG4-E-D0-QOU1r4-Ru-CKuf-Nj0o.jpg", // change to your default icon
+            thumbnailUrl: "https://files.catbox.moe/kzqia3.jpeg", // change to your default icon
             showAdAttribution: true,
             sourceUrl: "https://www.whatsapp.com/channel/0029VaZDIdxDTkKB4JSWUk1O" // default link
         }

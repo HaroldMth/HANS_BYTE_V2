@@ -458,9 +458,22 @@ cmd({
     category: "owner",
     filename: __filename
 },
-async (conn, mek, m, { from, sender, reply }) => {
-    const lidMap = new Map();
+async (conn, mek, m, { from, sender, reply, isGroup }) => {
+    // Load lid mappings from group metadata if in a group
+    let lidMap = new Map();
+    if (isGroup) {
+        const metadata = await conn.groupMetadata(from);
+        lidMap = loadLidMappings(metadata);
+    }
+    
     const resolvedSender = resolveToJid(sender, lidMap);
+
+    // Debug logging
+    console.log("== LEAVE CMD DEBUG ==");
+    console.log("Sender:", sender);
+    console.log("Resolved Sender:", resolvedSender);
+    console.log("Is Bot Owner:", isBotOwner(resolvedSender));
+    console.log("Config Owner:", config.OWNER_NUM);
 
     if (!isBotOwner(resolvedSender)) {
         await reply("❌ Only Owner/Sudo can use this!");
@@ -750,4 +763,52 @@ async (conn, mek, m, { from, sender, args, reply, isGroup }) => {
         await conn.sendMessage(from, { text });
         await new Promise(resolve => setTimeout(resolve, 300));
     }
+});
+
+cmd({
+  pattern: "kick",
+  use: ".kick @user (or reply)",
+  desc: "Remove a member from the group (admins only).",
+  category: "group",
+  filename: __filename
+}, async (conn, mek, m, { from, isGroup, sender, reply, args }) => {
+  if (!isGroup) return reply("❌ This command works only in groups!");
+  
+  const metadata = await conn.groupMetadata(from);
+  const lidMap = loadLidMappings(metadata);
+  const resolvedSender = resolveToJid(sender, lidMap);
+
+  if (!isUserAdmin(resolvedSender, metadata))
+      return reply("⚠️ Only group admins can kick!");
+
+  let targetJid =
+      m.mentionedJid?.[0] ||
+      (args[0] && `${args[0].replace(/\D/g, "")}@s.whatsapp.net`) ||
+      (m.message.extendedTextMessage?.contextInfo?.participant);
+
+  if (!targetJid)
+      return reply("🔎 Please mention, pass number, or reply to the user you want to kick!");
+
+  const resolvedTarget = resolveToJid(targetJid, lidMap);
+
+  if (isUserAdmin(resolvedTarget, metadata))
+      return reply(`⚠️ @${jidToNumber(targetJid)} is an admin and cannot be kicked!`, {}, { mentions: [targetJid] });
+
+  await conn.groupParticipantsUpdate(from, [targetJid], "remove");
+
+  const out = `
+━━━━━━━━━━━━━━━━━━━━━━━
+🛡️ *HANS BYTE V2 – KICK* 🛡️
+━━━━━━━━━━━━━━━━━━━━━━━
+
+👤 *User:* @${jidToNumber(targetJid)}
+📌 *Action:* Removed from group
+⚡ *By:* @${jidToNumber(sender)}
+
+━━━━━━━━━━━━━━━━━━━━━━━
+🔥 Powered by HANS BYTE V2
+━━━━━━━━━━━━━━━━━━━━━━━
+  `;
+  await conn.sendMessage(from, { text: out, mentions: [targetJid, sender], contextInfo: newsletterContext }, { quoted: mek });
+  await doReact("👢", m, conn);
 });

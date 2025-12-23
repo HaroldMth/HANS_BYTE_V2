@@ -19,7 +19,7 @@ cmd({
   filename: __filename
 }, async (conn, mek, m, { from, reply, pushname }) => {
   const quotedOption = mek && typeof mek === 'object' ? { quoted: mek } : {};
-  const IMG = 'https://i.ibb.co/PS5DZdJ/Chat-GPT-Image-Mar-30-2025-12-53-39-PM.png';
+  const IMG = 'https://files.catbox.moe/wdi4cg.jpeg';
 
   try {
     const uptime = formatUptime(process.uptime());

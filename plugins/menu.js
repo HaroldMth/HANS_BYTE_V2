@@ -306,6 +306,16 @@ cmd(
 │👑 Owner: ${config.OWNER_NAME}
 │📦 Version : *2.0.0*
 └───────✦✧✦──────≫
+// Ill add core commands menu firsst
+┌─═✦🖥️ CORE ✦═─┐
+│${config.PREFIX}menu
+│${config.PREFIX}setprefix
+│${config.PREFIX}setenv
+|${config.PREFIX}readenv
+│${config.PREFIX}env
+│${config.PREFIX}ping
+│${config.PREFIX}system
+└──────────≫
 
 ┌─═✦🤖 AI ✦═─┐
 │${config.PREFIX}gemini
@@ -433,7 +443,6 @@ cmd(
 │${config.PREFIX}shapar
 │${config.PREFIX}count
 │${config.PREFIX}pair
-│${config.PREFIX}spam
 │${config.PREFIX}ghibli
 │${config.PREFIX}obfuscate
 │${config.PREFIX}ssweb

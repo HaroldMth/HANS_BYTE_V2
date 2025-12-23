@@ -81,7 +81,7 @@ cmd(
           title: `HANS BYTE MD`,
           body: `BY HANS TECH`,
           mediaType: 2,
-          thumbnailUrl: "https://i.ibb.co/9gCjCwp/OIG4-E-D0-QOU1r4-Ru-CKuf-Nj0o.jpg",
+          thumbnailUrl: "https://files.catbox.moe/kzqia3.jpeg",
           showAdAttribution: true,
           sourceUrl: "https://whatsapp.com/channel/0029VaZDIdxDTkKB4JSWUk1O"
         }
