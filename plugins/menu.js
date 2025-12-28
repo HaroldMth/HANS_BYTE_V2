@@ -58,7 +58,8 @@ function getMenuChunks(prefix) {
 │${prefix}spotify
 └──────────≫`,
 
-    `┌─═✦🎮 GAMES ✦═─┐
+    `
+┌─═✦🎮 GAMES ✦═─┐
 │${prefix}quiz
 │${prefix}riddle
 │${prefix}typegame
@@ -67,7 +68,9 @@ function getMenuChunks(prefix) {
 │${prefix}coinflip
 └──────────≫`,
 
-    `┌─═✦😄 FUN ✦═─┐
+    `
+┌─═✦😄 FUN ✦═─┐
+│${prefix}
 │${prefix}lovecheck
 │${prefix}jokes
 │${prefix}quote
@@ -78,7 +81,8 @@ function getMenuChunks(prefix) {
 │${prefix}pokedex
 └──────────≫`,
 
-    `┌─═✦🛠️ TOOLS ✦═─┐
+    `
+┌─═✦🛠️ TOOLS ✦═─┐
 │${prefix}savestatus
 │${prefix}randomwalpp
 │${prefix}calculate
@@ -148,7 +152,10 @@ function getMenuChunks(prefix) {
 │${prefix}story
 └──────────≫`,
 
-    `┌─═✦📚 UTILITIES ✦═─┐
+    `
+┌─═✦📚 UTILITIES ✦═─┐
+│${prefix}randomwalpp
+│${prefix}savestatus
 │${prefix}bible
 │${prefix}book
 │${prefix}calender
