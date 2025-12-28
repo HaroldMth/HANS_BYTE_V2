@@ -57,6 +57,8 @@ cmd({
 ┇╭─────────────────────
 ┇│•📛 Name: HANS BYTE V2
 ┇│•👑 Owner: HANS TECH
+┇│•⚡ Repo: ${REPO_URL}
+┇│•🔗 Session: https://hans-byte-pair-site.onrender.com/
 ┇│•🔖 Version: ${version}
 ┇│•⏳ Uptime: ${uptime}
 ┇│•💾 RAM: ${ramUsed}MB / ${ramTotal}MB

@@ -75,9 +75,12 @@ HANS BYTE v2 can be hosted on **any Node.js capable panel**, VPS, or cloud servi
 
 HANS BYTE v2 uses a **separate pairing site** to generate a session:
 
-1. Visit: [https://hans-t-pair.onrender.com/](https://hans-t-pair.onrender.com/)
+1. Visit: [HANS BYTE PAIRING SITE](https://hansbytemd-pair.onrender.com/)
+
 2. Enter your phone number to receive a **pair code**
+
 3. Use the pair code on the site to generate your `SESSION_ID`
+
 4. Paste the `SESSION_ID` in your `.env` file
 
 ### Example `.env`
@@ -130,8 +133,10 @@ No QR scanning needed in code — clean, safe, and separate from the bot.
 
 ## 🛠 Setup Guide
 
-1️⃣ Fork the Repository: [HANS_BYTE_v2](https://github.com/HaroldMth/HANS_BYTE_v2/)
+1️⃣ Fork the Repository: [HANS_BYTE_v2](https://github.com/HaroldMth/HANS_BYTE_v2/fork)
+
 2️⃣ Set up `.env` using your pairing session ID and configuration
+
 3️⃣ Run the bot using `node index.js` (or your preferred method)
 
 ---
