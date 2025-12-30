@@ -48,6 +48,8 @@ const {
 
   // load lid-utils for robust owner resolution (supports lid mapping files)
   const { loadLidMappings, isOwnerResolved } = require('./lid-utils');
+  // load unified permission system
+  const { getPermissionState } = require('./lib/permissions');
   // build canonical owners array from config (append whatsapp domain)
   const OWNERS = [(config.OWNER_NUM || '237696900612') + '@s.whatsapp.net'];
   // load mappings once; optionally auto-reload
@@ -130,6 +132,12 @@ global.safeSend = safeSend;
 global.safeReply = safeReply;
 global.safeReact = safeReact;
 
+// Ignore transient fetch failed unhandled promise rejections
+process.on('unhandledRejection', err => {
+  if (err && err.message && typeof err.message === 'string' && err.message.includes('fetch failed')) return;
+  console.error('Unhandled rejection:', err);
+});
+
   //=============================================
   
   async function connectToWA() {
@@ -204,76 +212,26 @@ global.safeReact = safeReact;
     }, 5 * 60 * 1000)
   }
 
-      // Store the original sendMessage method before wrapping it
-      const originalSendMessage = conn.sendMessage;
-
-      // Enhanced sendMessage with intelligent timeout handling
-      // Messages may take time to deliver but will eventually go through
-      const safeSend = async (jid, message, options = {}, timeoutMs = null, maxRetries = 3) => {
-        // Dynamic timeout: longer for groups (which are slower), shorter for DMs
-        const isGroup = jid.endsWith('@g.us');
-        const defaultTimeout = isGroup ? 60000 : 35000; // 60s for groups, 35s for DMs
-        const actualTimeout = timeoutMs || defaultTimeout;
-        
-        let retries = 0;
-        while (retries <= maxRetries) {
-          try {
-            const sendPromise = originalSendMessage(jid, message, options);
-            
-            // Race between send and timeout, but handle timeout gracefully
-            const timeoutPromise = new Promise((_, reject) => {
-              setTimeout(() => reject(new Error('sendMessage timeout')), actualTimeout);
-            });
-            
-            try {
-              const result = await Promise.race([sendPromise, timeoutPromise]);
-              return result;
-            } catch (raceError) {
-              // If timeout won the race, the message is still being sent in background
-              // Don't treat this as a failure - just return quietly
-              if (raceError.message && raceError.message.includes('timeout')) {
-                // Message is still sending, don't log as error
-                // Continue the send in background without blocking
-                sendPromise.catch(() => {}); // Suppress background errors
-                return { status: 'pending' }; // Return success indicator
-              }
-              // Re-throw actual errors
-              throw raceError;
-            }
-          } catch (err) {
-            // Handle rate limit errors with retry
-            if (err.message === 'rate-overlimit' && retries < maxRetries) {
-              console.warn(`[safeSend] Rate limit exceeded for ${jid} - Retrying (${retries + 1}/${maxRetries}) after delay`);
-              await new Promise(resolve => setTimeout(resolve, 5000));
-              retries++;
-              continue;
-            }
-            
-            // For timeout errors, don't log - message is likely still being sent
-            if (err.message && err.message.includes('timeout')) {
-              // Message is being sent but taking longer - return quietly
-              return { status: 'pending' };
-            }
-            
-            // Only log actual errors (network issues, invalid jid, etc.)
-            // Suppress timeout error messages
-            if (err.message && !err.message.includes('timeout')) {
-              console.error(`[safeSend] Error for ${jid}:`, err.message);
-            }
-            
-            // For non-retryable errors, return null
-            return null;
+      // Define ONE safeSend helper that calls Baileys directly and retries on failure
+      const safeSend = async (jid, message, options = {}, retries = 2) => {
+        try {
+          return await conn.sendMessage(jid, message, options);
+        } catch (err) {
+          if (retries > 0) {
+            await new Promise(r => setTimeout(r, 1500));
+            return safeSend(jid, message, options, retries - 1);
           }
+          if (err && err.message && err.message.includes('fetch failed')) {
+            // ignore noisy transient errors
+          } else {
+            console.error(`[safeSend] Failed for ${jid}:`, err && err.message ? err.message : err);
+          }
+          return null;
         }
-        
-        // Max retries reached
-        return null;
       };
 
-      // Override sendMessage to use safeSend
-      conn.sendMessage = async (jid, message, options = {}) => {
-        return await safeSend(jid, message, options);
-      };
+      // Expose helper globally; DO NOT override conn.sendMessage
+      global.safeSend = safeSend;
       
       conn.ev.on('connection.update', async (update) => {
         const { connection, lastDisconnect } = update;
@@ -299,7 +257,7 @@ global.safeReact = safeReact;
           // Send bot active message to owner
           const ownerJid = `${config.OWNER_NUM}@s.whatsapp.net`;
           let up = `*YOUR BOT ACTIVE NOW ENJOY♥️*\n\n*PREFIX:* ${prefix}`;
-          await conn.sendMessage(ownerJid, { 
+          await safeSend(ownerJid, { 
             image: { url: 'https://files.catbox.moe/kzqia3.jpeg' }, 
             caption: up 
           });
@@ -432,7 +390,7 @@ ${desc ? '📜 *Description:*\n' + desc + '\n' : ''}
 ╚═════ ⛩ *HANS BYTE V2* ═════╝
 `;
 
-          await conn.sendMessage(groupId, {
+          await safeSend(groupId, {
             image: { url: groupPfp },
             caption: welcomeText,
             mentions: [userId]
@@ -449,7 +407,7 @@ ${desc ? '📜 *Description:*\n' + desc + '\n' : ''}
 👥 *Members now:* ${totalMembers}
 ╚═════ ⛩ *HANS BYTE V2* ═════╝
 `;
-          await conn.sendMessage(groupId, { text: goodbyeText, mentions: [userId] });
+          await safeSend(groupId, { text: goodbyeText, mentions: [userId] });
           console.log(`✅ Sent goodbye for ${userId} (${name})`);
         } else {
           // optional: handle promote/demote etc
@@ -476,6 +434,19 @@ if (!conn._messagesUpsertRegistered) {
   conn.ev.on('messages.upsert', async(mek) => {
     mek = mek.messages[0]
     if (!mek.message) return
+    
+    // 🚫 SYSTEM JID FILTER - Ignore all non-chat JIDs early
+    const jid = mek.key?.remoteJid;
+    const isUserChat = jid?.endsWith('@s.whatsapp.net');
+    const isGroupChat = jid?.endsWith('@g.us');
+    const isStatusBroadcast = jid === 'status@broadcast';
+    
+    // Only allow user chats, group chats, and status (for auto-seen/react features)
+    // Block @lid, @newsletter, and any other system JIDs
+    if (!jid || (!isUserChat && !isGroupChat && !isStatusBroadcast)) {
+      return;
+    }
+    
     mek.message = (getContentType(mek.message) === 'ephemeralMessage') 
     ? mek.message.ephemeralMessage.message 
     : mek.message;
@@ -509,7 +480,7 @@ if (!conn._messagesUpsertRegistered) {
     const dlike = await conn.decodeJid(conn.user.id);
     const emojis = ['❤️', '💸', '😇', '🍂', '💥', '💯', '🔥', '💫', '💎', '💗', '🤍', '🖤', '👀', '🙌', '🙆', '🚩', '🥰', '💐', '😎', '🤎', '✅', '🫀', '🧡', '😁', '😄', '🌸', '🕊️', '🌷', '⛅', '🌟', '🗿', '🇵🇰', '💜', '💙', '🌝', '🖤', '🎎', '🎏', '🎐', '⚽', '🧣', '🌿', '⛈️', '🌦️', '🌚', '🌝', '🙈', '🙉', '🦖', '🐤', '🎗️', '🥇', '👾', '🔫', '🐝', '🦋', '🍓', '🍫', '🍭', '🧁', '🧃', '🍿', '🍻', '🎀', '🧸', '👑', '〽️', '😳', '💀', '☠️', '👻', '🔥', '♥️', '👀', '🐼'];
     const randomEmoji = emojis[Math.floor(Math.random() * emojis.length)];
-    await conn.sendMessage(mek.key.remoteJid, {
+    await safeSend(mek.key.remoteJid, {
       react: {
         text: randomEmoji,
         key: mek.key,
@@ -519,7 +490,7 @@ if (!conn._messagesUpsertRegistered) {
   if (mek.key && mek.key.remoteJid === 'status@broadcast' && config.AUTO_REPLY_STATUS === "true"){
   const user = mek.key.participant
   const textt = `${config.AUTO_REPLY_TEXT}`
-  await conn.sendMessage(user, { text: textt }, { quoted: mek })
+  await safeSend(user, { text: textt }, { quoted: mek })
             }
 
   const m = sms(conn, mek)
@@ -550,17 +521,8 @@ if (!conn._messagesUpsertRegistered) {
   const botNumber = conn.user.id.split(':')[0]
   const pushname = mek.pushName || 'Sin Nombre'
   const isMe = botNumber.includes(senderNumber)
-  // prefer the ownerNumber list check, otherwise fallback to resolving lids/jids
-  let isOwner = ownerNumber.includes(senderNumber) || isMe;
-  if (!isOwner) {
-    try {
-      // maps may be null-safe
-      const resolved = isOwnerResolved(sender, OWNERS, maps);
-      if (resolved) isOwner = true;
-    } catch (e) {
-      // ignore resolution errors and keep isOwner as determined
-    }
-  }
+  // Use unified permission system
+  const { isOwner, isSudo, isPrivileged } = getPermissionState(sender, config);
   const botNumber2 = await jidNormalizedUser(conn.user.id);
   const groupMetadata = isGroup ? await getCachedGroupMetadata(from) : null;
   const groupName = isGroup && groupMetadata ? groupMetadata.subject : '';
@@ -1169,15 +1131,6 @@ if (!conn._messagesUpsertRegistered) {
             return status;
         };
     conn.serializeM = mek => sms(conn, mek, store);
-
-    conn.sendMessage = async (jid, message, options = {}) => {
-      try {
-        return await safeSend(jid, message, options);
-      } catch (err) {
-        console.error('[sendMessage] Error:', err);
-        return null;
-      }
-    };
   }
   
   app.get("/", (req, res) => {

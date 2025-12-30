@@ -12,7 +12,7 @@ module.exports = {
     // Owner info
     OWNER_NUM: process.env.OWNER_NUM || "",
     OWNER_NAME: process.env.OWNER_NAME || "",
-    SUDO: process.env.SUDO || "",
+    SUDOERS: process.env.SUDOERS || "",
     BOT_NAME: process.env.BOT_NAME || "HANS BYTE V2",
     // Bot info
     BOT_NAME: process.env.BOT_NAME || "",

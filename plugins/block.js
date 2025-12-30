@@ -1,5 +1,6 @@
 const config = require('../config');
 const { cmd } = require('../command');
+const { getPermissionState } = require('../lib/permissions');
 
 cmd({
     pattern: "block",
@@ -8,8 +9,12 @@ cmd({
     react: "🚫",
     filename: __filename
 },
-async (conn, mek, m, { isOwner, quoted, reply }) => {
-    if (!isOwner) return safeReply(conn, mek.key.remoteJid, "❌ You are not the owner!");
+async (conn, mek, m, { sender, isOwner, quoted, reply }) => {
+    // Owner check using unified permission system
+    const { isOwner: isOwnerUnified } = getPermissionState(sender, config);
+    if (!isOwner && !isOwnerUnified) {
+        return safeReply(conn, mek.key.remoteJid, "❌ You are not the owner!");
+    }
     if (!quoted) return safeReply(conn, mek.key.remoteJid, "❌ Please reply to the user's message you want to block.");
 
     const user = quoted.sender;

@@ -42,17 +42,32 @@ class RateLimiter {
 
 const rateLimiter = new RateLimiter();
 
-const safeSend = (conn, jid, message, options) => {
-  return new Promise((resolve, reject) => {
-    rateLimiter.enqueue(async () => {
+const safeSend = async (jid, message, options = {}, retries = 2) => {
+  try {
+    // Use the global safeSend if available, otherwise fallback to basic retry logic
+    if (global.safeSend && typeof global.safeSend === 'function') {
+      return await global.safeSend(jid, message, options);
+    }
+    
+    // Fallback implementation with simple retry
+    let attempt = 0;
+    while (attempt <= retries) {
       try {
-        const result = await conn.sendMessage(jid, message, options);
-        resolve(result);
-      } catch (error) {
-        reject(error);
+        // This will be set by the main index.js file
+        if (global.originalSendMessage) {
+          return await global.originalSendMessage(jid, message, options);
+        }
+        throw new Error('No sendMessage function available');
+      } catch (err) {
+        if (attempt === retries) throw err;
+        await new Promise(resolve => setTimeout(resolve, 1500));
+        attempt++;
       }
-    });
-  });
+    }
+  } catch (err) {
+    console.error(`[safeSend] Failed for ${jid}:`, err.message);
+    return null;
+  }
 };
 
 const safeReply = (conn, jid, text, quoted) => {

@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const { cmd } = require("../command");
 const config = require("../config");
-const { loadLidMappings, isOwnerResolved } = require('../lid-utils');
+const { getPermissionState } = require('../lib/permissions');
 cmd({
     pattern: "setprefix",
     use: ".setprefix <newprefix>",
@@ -10,10 +10,10 @@ cmd({
     category: "owner",
     filename: __filename
 }, async (conn, mek, m, { sender, reply, args, isOwner }) => {
-    // Check owner
-    if (!isOwner) {
-        const resolvedIsOwner = isOwnerResolved(sender,  maps);
-        if (!resolvedIsOwner) return safeReply(conn, mek.key.remoteJid, "🚫 Only bot owners can change the prefix!");
+    // Owner check using unified permission system
+    const { isOwner: isOwnerUnified } = getPermissionState(sender, config);
+    if (!isOwner && !isOwnerUnified) {
+        return safeReply(conn, mek.key.remoteJid, "🚫 Only bot owners can change the prefix!");
     }
 
     if (!args[0]) return safeReply(conn, mek.key.remoteJid, "❌ Please provide a new prefix.");

@@ -1,5 +1,6 @@
 const { cmd } = require("../command");
 const { resolveToJid, loadLidMappings } = require("../lid-utils.js");
+const { getPermissionState } = require("../lib/permissions");
 const config = require("../config");
 const fs = require("fs");
 const path = require("path");
@@ -269,7 +270,9 @@ async (conn, mek, m, { from, sender, reply, isGroup }) => {
     console.log("Is Bot Owner:", isBotOwner(resolvedSender));
     console.log("Config Owner:", config.OWNER_NUM);
 
-    if (!isBotOwner(resolvedSender)) {
+    // Use unified permission system
+    const { isPrivileged } = getPermissionState(sender, config);
+    if (!isPrivileged) {
         await safeReply(conn, mek.key.remoteJid, "❌ Only Owner/Sudo can use this!");
         return;
     }
@@ -533,10 +536,11 @@ async (conn, mek, m, { from, sender, args, reply, isGroup }) => {
     const lidMap = isGroup ? loadLidMappings(await conn.groupMetadata(from)) : new Map();
     const resolvedSender = resolveToJid(sender, lidMap);
 
-    const isOwner = isBotOwner(resolvedSender);
+    // Use unified permission system
+    const { isPrivileged } = getPermissionState(sender, config);
     const isAdmin = isGroup ? isUserAdmin(resolvedSender, await conn.groupMetadata(from)) : false;
 
-    if (!isOwner && !isAdmin)
+    if (!isPrivileged && !isAdmin)
         return safeReply(conn, mek.key.remoteJid, "⚠️ Only group admins or bot owner can use this command.");
 
     if (args.length < 2)

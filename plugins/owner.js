@@ -5,16 +5,7 @@ const config = require('../config');
 const fs = require('fs');
 const path = require('path');
 
-const { loadLidMappings, resolveToJid, isOwnerResolved } = require('../lid-utils');
-
-// configure owner list from config (canonical jid)
-const OWNERS = [
-  (config.OWNER_NUM || '237696900612') + '@s.whatsapp.net'
-];
-
-// optionally, load maps once and refresh every X minutes
-let maps = loadLidMappings();
-// if you want auto-reload, setInterval(() => maps = loadLidMappings(), 1000 * 60 * 5);
+const { getPermissionState } = require('../lib/permissions');
 
 // shutdown / stop command
 cmd({
@@ -30,10 +21,10 @@ cmd({
     console.log("Sender (raw):", sender);
     console.log("isOwner flag:", isOwner);
 
-    // Owner check
-    if (!isOwner) {
-      const resolvedIsOwner = isOwnerResolved(sender, OWNERS, maps);
-      if (!resolvedIsOwner) return reply("🚫 Owner only command!");
+    // Owner check using unified permission system
+    const { isOwner: isOwnerUnified } = getPermissionState(sender, config);
+    if (!isOwner && !isOwnerUnified) {
+      return reply("🚫 Owner only command!");
     }
 
     // React if supported
@@ -71,10 +62,10 @@ cmd({
   category: 'Owner',
   filename: __filename
 }, async (conn, mek, m, { from, sender, reply, args, isOwner }) => {
-  // same owner resolution as shutdown: prefer passed flag, otherwise resolve
-  if (!isOwner) {
-    const resolvedIsOwner = isOwnerResolved(sender, OWNERS, maps);
-    if (!resolvedIsOwner) return safeReply(conn, mek.key.remoteJid, "🚫 Owner only command!");
+  // Owner check using unified permission system
+  const { isOwner: isOwnerUnified } = getPermissionState(sender, config);
+  if (!isOwner && !isOwnerUnified) {
+    return safeReply(conn, mek.key.remoteJid, "🚫 Owner only command!");
   }
   if (!args[0]) return safeReply(conn, mek.key.remoteJid, "❌ Please provide a message for broadcast.");
 
@@ -98,9 +89,10 @@ cmd({
   category: 'Owner',
   filename: __filename
 }, async (conn, mek, m, { from, sender, reply, args, isOwner }) => {
-  if (!isOwner) {
-    const resolvedIsOwner = isOwnerResolved(sender, OWNERS, maps);
-    if (!resolvedIsOwner) return safeReply(conn, mek.key.remoteJid, "🚫 Owner only command!");
+  // Owner check using unified permission system
+  const { isOwner: isOwnerUnified } = getPermissionState(sender, config);
+  if (!isOwner && !isOwnerUnified) {
+    return safeReply(conn, mek.key.remoteJid, "🚫 Owner only command!");
   }
   let statusMsg = args.join(" ") || "🤖 HANS BYTE V2 – Smarter, Faster, Better ⚡";
   await conn.updateProfileStatus(statusMsg);
@@ -119,9 +111,10 @@ cmd({
   category: 'Owner',
   filename: __filename
 }, async (conn, mek, m, { from, sender, reply, isOwner }) => {
-  if (!isOwner) {
-    const resolvedIsOwner = isOwnerResolved(sender, OWNERS, maps);
-    if (!resolvedIsOwner) return safeReply(conn, mek.key.remoteJid, "🚫 Owner only command!");
+  // Owner check using unified permission system
+  const { isOwner: isOwnerUnified } = getPermissionState(sender, config);
+  if (!isOwner && !isOwnerUnified) {
+    return safeReply(conn, mek.key.remoteJid, "🚫 Owner only command!");
   }
 
   // Safe fetching of groups
@@ -153,9 +146,10 @@ cmd({
   category: 'Owner',
   filename: __filename
 }, async (conn, mek, m, { from, sender, reply, args, isOwner }) => {
-  if (!isOwner) {
-    const resolvedIsOwner = isOwnerResolved(sender, OWNERS, maps);
-    if (!resolvedIsOwner) return safeReply(conn, mek.key.remoteJid, "🚫 Owner only command!");
+  // Owner check using unified permission system
+  const { isOwner: isOwnerUnified } = getPermissionState(sender, config);
+  if (!isOwner && !isOwnerUnified) {
+    return safeReply(conn, mek.key.remoteJid, "🚫 Owner only command!");
   }
   let command = args.join(" ");
   if (!command) return safeReply(conn, mek.key.remoteJid, "❌ Provide a shell command to run.");
@@ -175,9 +169,10 @@ cmd({
   category: 'Owner',
   filename: __filename
 }, async (conn, mek, m, { from, sender, reply, args, isOwner }) => {
-  if (!isOwner) {
-    const resolvedIsOwner = isOwnerResolved(sender, OWNERS, maps);
-    if (!resolvedIsOwner) return safeReply(conn, mek.key.remoteJid, "🚫 Owner only command!");
+  // Owner check using unified permission system
+  const { isOwner: isOwnerUnified } = getPermissionState(sender, config);
+  if (!isOwner && !isOwnerUnified) {
+    return safeReply(conn, mek.key.remoteJid, "🚫 Owner only command!");
   }
   let code = args.join(" ");
   if (!code) return safeReply(conn, mek.key.remoteJid, "❌ Provide JS code to evaluate.");
@@ -199,10 +194,10 @@ cmd({
   category: 'Owner',
   filename: __filename
 }, async (conn, mek, { from, sender, reply, isOwner }) => {
-  // Owner check
-  if (!isOwner) {
-    const resolvedIsOwner = isOwnerResolved(sender, OWNERS, maps);
-    if (!resolvedIsOwner) return reply("🚫 Owner only command!");
+  // Owner check using unified permission system
+  const { isOwner: isOwnerUnified } = getPermissionState(sender, config);
+  if (!isOwner && !isOwnerUnified) {
+    return reply("🚫 Owner only command!");
   }
 
   // React if supported
