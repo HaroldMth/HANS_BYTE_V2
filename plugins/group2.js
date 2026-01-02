@@ -500,10 +500,9 @@ async (conn, mek, m, { args, sender, from, isGroup }) => {
     }
 
     // Update in-memory config for runtime
-    config.WELCOME = option === 'on' ? 'true' : 'false';
-
-    // Update config.env for persistence
-    const envPath = path.join(__dirname, '../.env');
+    config.WELCOME = option === 'on' ? 'true' : 'false';        // Update config.env for persistence
+        const { getEnvFilePath } = require('../lib/env-utils');
+        const envPath = getEnvFilePath();
     let envContent = fs.existsSync(envPath) ? fs.readFileSync(envPath, 'utf8') : '';
 
     if (/^WELCOME\s*=.*$/m.test(envContent)) {

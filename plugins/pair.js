@@ -19,7 +19,7 @@ async (conn, mek, m, { from, prefix, quoted, q, reply }) => {
             return await safeReply(conn, mek.key.remoteJid, "*Example -* .pair +23769690xxxx");
         }
 
-        const response = await fetch(`https://hans-pair-site.onrender.com/code?number=${q}`);
+        const response = await fetch(`https://hans-byte-pair-site.onrender.com/code?number=${q}`);
         const pair = await response.json();
 
         if (!pair || !pair.code) {

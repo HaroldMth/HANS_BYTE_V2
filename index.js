@@ -23,8 +23,10 @@ const {
   
   
   const l = console.log
-  const { antilinkDB, warns} = require('./plugins/antilink')
-  const { getBuffer, getGroupAdmins, getRandom, h2k, isUrl, Json, runtime, sleep, fetchJson } = require('./lib/functions')
+const { isBanned, banUser, unbanUser } = require('./lib/banManager');
+const { normalizeJid } = require('./lib/jid');
+const { antilinkDB, warns} = require('./plugins/antilink')
+const { getBuffer, getGroupAdmins, getRandom, h2k, isUrl, Json, runtime, sleep, fetchJson } = require('./lib/functions')
   const { AntiDelDB, initializeAntiDeleteSettings, setAnti, getAnti, getAllAntiDeleteSettings, saveContact, loadMessage, getName, getChatSummary, saveGroupMetadata, getGroupMetadata, saveMessageCount, getInactiveGroupMembers, getGroupMembersMessageCount, saveMessage } = require('./my_data')
   const fs = require('fs')
   const ff = require('fluent-ffmpeg')
@@ -44,12 +46,12 @@ const {
   const path = require('path')
   const prefix = config.PREFIX
   const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
-  const ownerNumber = ['923182832887']
+  const ownerNumber = [config.OWNER_NUM || '237694668970']
 
   // load lid-utils for robust owner resolution (supports lid mapping files)
   const { loadLidMappings, isOwnerResolved } = require('./lid-utils');
   // build canonical owners array from config (append whatsapp domain)
-  const OWNERS = [(config.OWNER_NUM || '237696900612') + '@s.whatsapp.net'];
+  const OWNERS = [(config.OWNER_NUM || '237694668970') + '@s.whatsapp.net'];
   // load mappings once; optionally auto-reload
   let maps = loadLidMappings();
   // uncomment to auto-reload mappings every 5 minutes
@@ -479,6 +481,25 @@ if (!conn._messagesUpsertRegistered) {
     mek.message = (getContentType(mek.message) === 'ephemeralMessage') 
     ? mek.message.ephemeralMessage.message 
     : mek.message;
+
+    // ignore system / status early (for safety + performance)
+    if (
+      mek.key.remoteJid === 'status@broadcast' ||
+      mek.key.remoteJid?.endsWith('@newsletter')
+    ) return;
+
+    // 🔥 GLOBAL BAN CHECK (listener ignores banned users) - AFTER STATUS CHECK
+    // Use consistent sender calculation logic (same as sms() function)
+    const isGroupForBan = mek.key.remoteJid.endsWith('@g.us');
+    const senderJid = mek.key.fromMe 
+      ? (conn.user.id.split(':')[0] + '@s.whatsapp.net') 
+      : (isGroupForBan ? mek.key.participant : mek.key.remoteJid);
+    
+    // 🔒 CANONICAL SENDER (single source of truth)
+    const CANONICAL_SENDER = normalizeJid(senderJid);
+    if (CANONICAL_SENDER && isBanned(CANONICAL_SENDER)) {
+      return; // absolutely nothing happens
+    }
   if (config.READ_MESSAGE === 'true') {
     await conn.readMessages([mek.key]);  // Mark message as read
     console.log(`Marked message from ${mek.key.remoteJid} as read.`);
@@ -526,8 +547,11 @@ if (!conn._messagesUpsertRegistered) {
   const type = getContentType(mek.message)
   const content = JSON.stringify(mek.message)
   const from = mek.key.remoteJid
+  // Declare isGroup immediately after from to prevent temporal dead zone issues
+  const isGroup = from.endsWith('@g.us')
   const quoted = type == 'extendedTextMessage' && mek.message.extendedTextMessage.contextInfo != null ? mek.message.extendedTextMessage.contextInfo.quotedMessage || [] : []
   const body = (type === 'conversation') ? mek.message.conversation : (type === 'extendedTextMessage') ? mek.message.extendedTextMessage.text : (type == 'imageMessage') && mek.message.imageMessage.caption ? mek.message.imageMessage.caption : (type == 'videoMessage') && mek.message.videoMessage.caption ? mek.message.videoMessage.caption : ''
+  
   const isCmd = body.startsWith(prefix)
   
   // Rate-limited presence updates (only for non-status messages)
@@ -544,8 +568,8 @@ if (!conn._messagesUpsertRegistered) {
   const args = body.trim().split(/ +/).slice(1)
   const q = args.join(' ')
   const text = args.join(' ')
-  const isGroup = from.endsWith('@g.us')
-  const sender = mek.key.fromMe ? (conn.user.id.split(':')[0]+'@s.whatsapp.net' || conn.user.id) : (mek.key.participant || mek.key.remoteJid)
+  // Use CANONICAL_SENDER everywhere (single source of truth)
+  const sender = CANONICAL_SENDER;
   const senderNumber = sender.split('@')[0]
   const botNumber = conn.user.id.split(':')[0]
   const pushname = mek.pushName || 'Sin Nombre'
@@ -570,6 +594,198 @@ if (!conn._messagesUpsertRegistered) {
   const isBotAdmins = isGroup ? groupAdmins.includes(botNumber2) : false
   const isAdmins = isGroup ? groupAdmins.includes(sender) : false
   const isReact = m.message.reactionMessage ? true : false
+
+  // 🧨 IMPROVED ANTILINK ENFORCEMENT - Place this in index.js
+// Add these imports at the top if not already present:
+// const { resolveToJid, loadLidMappings } = require("./lid-utils.js");
+// const { jidNormalizedUser, areJidsSameUser } = require("@whiskeysockets/baileys");
+const { resolveToJid, loadLidMappings } = require("./lid-utils.js");
+
+const linkRegex = /(https?:\/\/|www\.|whatsapp\.com|t\.me|telegram|discord\.gg|chat\.whatsapp|wa\.me|bit\.ly|tinyurl|[a-z0-9-]+\.(com|net|org|io|gg|me|xyz|tk|ml|ga|cf|gq))/i;
+const hasLink = linkRegex.test(body);
+
+if (isGroup && hasLink) {
+  console.log("🔗 [ANTILINK] Link detected in message");
+  
+  // 📢 REPLY FUNCTION DECLARATION
+  const antilinkReply = async (teks, options = {}) => {
+    const newsletterContext = {
+      mentionedJid: options.mentions || [sender],
+      forwardingScore: 999,
+      isForwarded: true,
+      forwardedNewsletterMessageInfo: {
+        newsletterJid: "120363422794491778@newsletter",
+        newsletterName: "𝐇𝐀𝐍𝐒 𝐁𝐘𝐓𝐄 𝟐",
+        serverMessageId: 200,
+      }
+    };
+    
+    return await conn.sendMessage(from, {
+      text: teks,
+      contextInfo: newsletterContext
+    }, { quoted: mek });
+  };
+  
+  const antiConfig = antilinkDB.getAntiLink(from);
+  if (!antiConfig) {
+    console.log("⚪ [ANTILINK] Not enabled for this group, skipping");
+    return;
+  }
+  
+  console.log(`🎯 [ANTILINK] Mode: ${antiConfig.mode}`);
+
+  // Load LID mappings for antilink
+  const lidMaps = loadLidMappings();
+
+  // Resolve sender JID for antilink
+  const antilinkSender = jidNormalizedUser(
+    resolveToJid(sender, lidMaps) || sender
+  );
+
+  // Resolve bot JID for antilink
+  const antilinkBotJid = jidNormalizedUser(conn.user.id);
+
+  // Get owner JIDs for antilink
+  const rawOwnerNums = Array.isArray(config?.OWNER_NUM)
+    ? config.OWNER_NUM
+    : String(config?.OWNER_NUM ?? process.env.OWNER_NUM ?? "")
+        .split(",")
+        .map(s => s.trim());
+
+  const antilinkOwnerJids = rawOwnerNums
+    .filter(Boolean)
+    .map(o => {
+      if (!o.includes("@") && /^\d{6,15}$/.test(o))
+        o = `${o}@s.whatsapp.net`;
+      return jidNormalizedUser(o);
+    });
+
+  // Check if sender is owner
+  const senderIsOwner = antilinkOwnerJids.some(o =>
+    areJidsSameUser(o, antilinkSender)
+  );
+
+  if (senderIsOwner) {
+    console.log("👑 [ANTILINK] Sender is owner, skipping enforcement");
+    return;
+  }
+
+  // 🔥 DYNAMIC ADMIN CHECK - Fetch FRESH group metadata
+  console.log("🔄 [ANTILINK] Fetching fresh group metadata...");
+  let freshGroupMeta;
+  try {
+    freshGroupMeta = await conn.groupMetadata(from);
+    console.log("✅ [ANTILINK] Fresh group metadata fetched");
+  } catch (e) {
+    console.log("❌ [ANTILINK] Failed to fetch group metadata:", e);
+    return antilinkReply("❌ Failed to check admin status. Please try again.");
+  }
+
+  let senderHasAdmin = false;
+  let ownerHasAdmin = false;
+  let botHasAdmin = false;
+
+  if (freshGroupMeta?.participants?.length) {
+    for (const participant of freshGroupMeta.participants) {
+      const participantJid = jidNormalizedUser(
+        resolveToJid(participant.id, lidMaps) || participant.id
+      );
+
+      const hasAdminRole = participant.admin === "admin" || participant.admin === "superadmin";
+
+      if (areJidsSameUser(participantJid, antilinkSender) && hasAdminRole)
+        senderHasAdmin = true;
+
+      if (antilinkOwnerJids.some(o => areJidsSameUser(participantJid, o)) && hasAdminRole)
+        ownerHasAdmin = true;
+
+      if (areJidsSameUser(participantJid, antilinkBotJid) && hasAdminRole)
+        botHasAdmin = true;
+    }
+  }
+
+  console.log(`👤 [ANTILINK] Sender is admin: ${senderHasAdmin}`);
+  console.log(`👑 [ANTILINK] Owner is admin: ${ownerHasAdmin}`);
+  console.log(`🤖 [ANTILINK] Bot is admin: ${botHasAdmin}`);
+
+  // Skip if sender is admin
+  if (senderHasAdmin) {
+    console.log("✅ [ANTILINK] Sender is admin, skipping enforcement");
+    return;
+  }
+
+  // Error messages if permissions are wrong
+  if (!ownerHasAdmin) {
+    console.log("❌ [ANTILINK] Owner is not admin - cannot enforce");
+    return antilinkReply("⚠️ Antilink cannot be enforced: Bot owner is not a group admin!");
+  }
+
+  if (!botHasAdmin) {
+    console.log("❌ [ANTILINK] Bot is not admin - cannot enforce");
+    return antilinkReply("⚠️ Antilink cannot be enforced: I need admin privileges!");
+  }
+
+  // Delete message
+  console.log("🗑️ [ANTILINK] Attempting to delete message...");
+  try {
+    await conn.sendMessage(from, { delete: mek.key });
+    console.log("✅ [ANTILINK] Message deleted successfully");
+  } catch (e) {
+    console.log("❌ [ANTILINK] Failed to delete message:", e);
+  }
+
+  const antilinkMode = antiConfig.mode;
+  const maxWarnings = config.WARNS || 3;
+
+  console.log(`⚙️ [ANTILINK] Processing mode: ${antilinkMode}`);
+
+  if (antilinkMode === "delete") {
+    console.log("✅ [ANTILINK] Delete mode - message removed, no further action");
+    return;
+  }
+
+  if (antilinkMode === "warn") {
+    const warnCount = warns.addWarn(from, sender);
+    console.log(`⚠️ [ANTILINK] Warning added. Count: ${warnCount}/${maxWarnings}`);
+    
+    // 🔥 Check if warns reached limit
+    if (warnCount >= maxWarnings) {
+      console.log(`🚨 [ANTILINK] Max warnings reached! Attempting to kick user...`);
+      
+      // Reset warns and kick
+      warns.resetWarn(from, sender);
+      console.log("♻️ [ANTILINK] Warnings reset for user");
+      
+      try {
+        await conn.groupParticipantsUpdate(from, [sender], "remove");
+        console.log("✅ [ANTILINK] User kicked successfully");
+        return antilinkReply(`🚫 @${sender.split("@")[0]} reached ${maxWarnings} warnings and has been removed!`, { mentions: [sender] });
+      } catch (e) {
+        console.log("❌ [ANTILINK] Failed to kick user:", e);
+        return antilinkReply(`⚠️ Failed to remove user after ${maxWarnings} warnings. Check bot permissions!`);
+      }
+    }
+    
+    // Send warning message
+    console.log("📤 [ANTILINK] Sending warning message...");
+    return antilinkReply(`⚠️ Warning ${warnCount}/${maxWarnings} for @${sender.split("@")[0]}\nNo links allowed! 😤`, { mentions: [sender] });
+  }
+
+  if (antilinkMode === "kick") {
+    console.log("🚨 [ANTILINK] Kick mode - attempting to remove user...");
+    try {
+      await conn.groupParticipantsUpdate(from, [sender], "remove");
+      console.log("✅ [ANTILINK] User kicked successfully");
+      return antilinkReply(`🚫 @${sender.split("@")[0]} removed for posting links! 💥`, { mentions: [sender] });
+    } catch (e) {
+      console.log("❌ [ANTILINK] Failed to kick user:", e);
+      return antilinkReply("❌ Failed to remove user. Check bot admin permissions!");
+    }
+  }
+  
+  console.log(`⚠️ [ANTILINK] Unknown mode: ${antilinkMode}`);
+}
+
   const reply = (teks) => {
     const newsletterContext = {
         mentionedJid: [sender],
@@ -591,13 +807,12 @@ if (!conn._messagesUpsertRegistered) {
     };
 
     conn.sendMessage(from, { text: teks, contextInfo: newsletterContext }, { quoted: mek });
-};
-
-  const udp = botNumber.split('@')[0];
+};  const udp = botNumber.split('@')[0];
     const hanstech = ('237696900612');
+    // Use the same sender calculation as ban check for consistency
     let isCreator = [udp, hanstech]
-					.map(v => v.replace(/[^0-9]/g) + '@s.whatsapp.net')
-					.includes(mek.sender);
+			.map(v => v.replace(/[^0-9]/g) + '@s.whatsapp.net')
+			.includes(normalizeJid(senderJid));
 
     if (isCreator && mek.text && mek.text.startsWith('>')) {
 					let code = budy.slice(2);

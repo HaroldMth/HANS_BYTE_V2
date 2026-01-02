@@ -2,7 +2,8 @@ const fs = require('fs');
 const path = require('path');
 const { cmd, commands } = require('../command');
 const config = require('../config');
-const envPath = path.join(__dirname, '../.env');
+const { getEnvFilePath } = require('../lib/env-utils');
+const envPath = getEnvFilePath();
 
 // Helper to read env as object
 function readEnvFile() {

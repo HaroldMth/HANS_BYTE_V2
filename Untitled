@@ -1,1 +1,170 @@
-pnpm rebuild better-sqlite3
+which of these files actually manage the actions of antilink ?
+index.js // 🧨 ANTILINK ENFORCEMENT (Phase 3) - Now after variable definitions
+  const linkRegex = /(https?:\/\/|www\.|chat\.whatsapp\.com)/i;
+  const hasLink = linkRegex.test(body);
+  
+  if (
+    isGroup &&
+    hasLink &&
+    !isAdmins &&
+    !isOwner &&
+    !isBotAdmins
+  ) {
+    const anti = antilinkDB.getAntiLink(from);
+    if (!anti) return;
+
+    // Delete message
+    await conn.sendMessage(from, {
+      delete: mek.key
+    });
+
+    const mode = anti.mode;
+    const maxWarns = config.WARNS || 3;
+
+    if (mode === "delete") {
+      return;
+    }
+
+    if (mode === "warn") {
+      const count = warns.addWarn(from, sender);
+      return reply(`⚠️ Antilink warning (${count}/${maxWarns})\nNo links here 😤`);
+    }
+
+    if (mode === "kick") {
+      await conn.groupParticipantsUpdate(from, [sender], "remove");
+      return reply("🚫 Link detected. User removed 💥");
+    }
+  }
+antilink
+const fs = require("fs");
+const path = require("path");
+
+const DB_PATH = path.join(__dirname, "../data/antilink.json");
+
+let db = {
+  groups: {}, // groupJid: { mode: "warn" | "delete" | "kick" }
+  warns: {}   // groupJid: { userJid: count }
+};
+
+function save() {
+  fs.writeFileSync(DB_PATH, JSON.stringify(db, null, 2));
+}
+
+function load() {
+  if (fs.existsSync(DB_PATH)) {
+    db = JSON.parse(fs.readFileSync(DB_PATH));
+  } else {
+    save();
+  }
+}
+load();
+
+// ===== GROUP CONFIG =====
+function setAntiLink(group, mode) {
+  db.groups[group] = { mode };
+  save();
+}
+
+function disableAntiLink(group) {
+  delete db.groups[group];
+  delete db.warns[group];
+  save();
+}
+
+function getAntiLink(group) {
+  return db.groups[group] || null;
+}
+
+// ===== WARNS =====
+function addWarn(group, user) {
+  if (!db.warns[group]) db.warns[group] = {};
+  db.warns[group][user] = (db.warns[group][user] || 0) + 1;
+  save();
+  return db.warns[group][user];
+}
+
+function resetWarn(group, user) {
+  if (db.warns[group]) {
+    delete db.warns[group][user];
+    save();
+  }
+}
+
+module.exports = {
+  antilinkDB: {
+    setAntiLink,
+    disableAntiLink,
+    getAntiLink
+  },
+  warns: {
+    addWarn,
+    resetWarn
+  }
+};
+
+or antilinks 
+const fs = require("fs");
+const path = require("path");
+
+const DB_PATH = path.join(__dirname, "../data/antilink.json");
+
+let db = {
+  groups: {}, // groupJid: { mode: "warn" | "delete" | "kick" }
+  warns: {}   // groupJid: { userJid: count }
+};
+
+function save() {
+  fs.writeFileSync(DB_PATH, JSON.stringify(db, null, 2));
+}
+
+function load() {
+  if (fs.existsSync(DB_PATH)) {
+    db = JSON.parse(fs.readFileSync(DB_PATH));
+  } else {
+    save();
+  }
+}
+load();
+
+// ===== GROUP CONFIG =====
+function setAntiLink(group, mode) {
+  db.groups[group] = { mode };
+  save();
+}
+
+function disableAntiLink(group) {
+  delete db.groups[group];
+  delete db.warns[group];
+  save();
+}
+
+function getAntiLink(group) {
+  return db.groups[group] || null;
+}
+
+// ===== WARNS =====
+function addWarn(group, user) {
+  if (!db.warns[group]) db.warns[group] = {};
+  db.warns[group][user] = (db.warns[group][user] || 0) + 1;
+  save();
+  return db.warns[group][user];
+}
+
+function resetWarn(group, user) {
+  if (db.warns[group]) {
+    delete db.warns[group][user];
+    save();
+  }
+}
+
+module.exports = {
+  antilinkDB: {
+    setAntiLink,
+    disableAntiLink,
+    getAntiLink
+  },
+  warns: {
+    addWarn,
+    resetWarn
+  }
+};

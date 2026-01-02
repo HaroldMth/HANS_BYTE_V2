@@ -1,5 +1,21 @@
 const fs = require('fs');
-if (fs.existsSync('.env')) require('dotenv').config({ path: './.env' });
+const path = require('path');
+
+// Allow custom .env file path via ENV_FILE_PATH environment variable or default to ./.env
+const envFilePath = process.env.ENV_FILE_PATH || './.env';
+const resolvedEnvPath = path.resolve(envFilePath);
+
+if (fs.existsSync(resolvedEnvPath)) {
+    require('dotenv').config({ path: resolvedEnvPath });
+    console.log(`✅ Environment file loaded from: ${resolvedEnvPath}`);
+} else {
+    console.log(`⚠️ Environment file not found at: ${resolvedEnvPath}`);
+    // Try default location as fallback
+    if (envFilePath !== './.env' && fs.existsSync('./.env')) {
+        require('dotenv').config({ path: './.env' });
+        console.log(`✅ Fallback: Environment file loaded from: ${path.resolve('./.env')}`);
+    }
+}
 
 function convertToBool(text, fault = 'true') {
     return text === fault ? true : false;
